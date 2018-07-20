@@ -1,5 +1,5 @@
 //
-//  FirstViewController.swift
+//  SecondViewController.swift
 //  Migraine Log
 //
 //  Created by Ryan Forsythe on 7/19/18.
@@ -8,7 +8,7 @@
 
 import UIKit
 
-class FirstViewController: UIViewController {
+class StatsViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
