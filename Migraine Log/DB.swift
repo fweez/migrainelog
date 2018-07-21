@@ -10,22 +10,24 @@ import Foundation
 import SQLite
 
 class DB {
-    var connection: Connection
+    var connection: Connection = {
+        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
+        var c: Connection
+        do {
+            c = try Connection("\(path)/migraines.sqlite3")
+            c.trace { print($0) }
+        } catch {
+            assertionFailure("Could not open migraines.sqlite3")
+            c = (try? Connection())!
+        }
+        print("Connected to \(path)/migraines.sqlite3")
+        return c
+    }()
     static var shared = DB()
     
     static var version = 1
     
     init() {
-        let path = NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).first!
-        do {
-            self.connection = try Connection("\(path)/migraines.sqlite3")
-            self.connection.trace { print($0) }
-        } catch {
-            assertionFailure("Could not open migraines.sqlite3")
-            self.connection = (try? Connection())!
-        }
-        print("Connected to \(path)/migraines.sqlite3")
-        
         if let pluck = try? self.connection.pluck(DB.table), let row = pluck, row[Columns.version] == DB.version {
             return
         }
@@ -58,6 +60,14 @@ extension DB {
             })
         } catch {
             print("didn't create meta table: \(error)")
+        }
+    }
+    
+    func run(_ insert: Insert) {
+        do {
+            try self.connection.run(insert)
+        } catch {
+            print("Couldn't run insert '\(insert)': \(error)")
         }
     }
 }

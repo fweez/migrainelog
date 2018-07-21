@@ -9,17 +9,32 @@
 import UIKit
 
 class StatsViewController: UIViewController {
-
-    override func viewDidLoad() {
-        super.viewDidLoad()
-        // Do any additional setup after loading the view, typically from a nib.
+    @IBOutlet weak var monthMigrainesLabel: UILabel!
+    @IBOutlet weak var monthRztLabel: UILabel!
+    @IBOutlet weak var monthIbuprofenLabel: UILabel!
+    @IBOutlet weak var quarterMigrainesLabel: UILabel!
+    @IBOutlet weak var quarterRztLabel: UILabel!
+    @IBOutlet weak var quarterIbuprofenLabel: UILabel!
+    
+    override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        super.viewWillAppear(animated)
+        
+        self.monthMigrainesLabel.text = "\(Migraine.monthMigraineCount) migraines"
+        self.monthRztLabel.text = "\(Treatment.monthRztCount) doses of rizatriptan"
+        self.monthIbuprofenLabel.text = "\(Treatment.monthIbuprofenCount) doses of ibuprofen"
+        
+        self.quarterMigrainesLabel.text = "\(Migraine.quarterMigraineCount) migraines"
+        self.quarterRztLabel.text = "\(Treatment.quarterRztCount) doses of rizatriptan"
+        self.quarterIbuprofenLabel.text = "\(Treatment.quarterIbuprofenCount) doses of ibuprofen"
     }
-
-    override func didReceiveMemoryWarning() {
-        super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
+    
+    @IBAction func tappedExport(_ sender: UIButton) {
+        let report = Migraine.generateReport()
+        let activityVC = UIActivityViewController(activityItems: [report], applicationActivities: nil)
+        activityVC.excludedActivityTypes = [.postToFacebook, .postToTwitter, .openInIBooks]
+        self.present(activityVC, animated: true, completion: nil)
     }
-
-
 }
 
