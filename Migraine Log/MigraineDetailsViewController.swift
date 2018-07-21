@@ -49,6 +49,8 @@ class MigraineDetailsViewController: UIViewController {
         self.ibuprofenUpdated()
         self.severityUpdated()
         self.lengthUpdated()
+        self.causeView.text = self.migraine.cause
+        self.notesView.text = self.migraine.notes
     }
     
     override func viewWillDisappear(_ animated: Bool) {
@@ -228,11 +230,19 @@ extension MigraineDetailsViewController: UITextFieldDelegate {
     func textFieldDidBeginEditing(_ textField: UITextField) {
         self.dismissPicker()
     }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        self.migraine.cause = textField.text ?? ""
+    }
 }
 
 extension MigraineDetailsViewController: UITextViewDelegate {
     func textViewDidBeginEditing(_ textView: UITextView) {
         self.dismissPicker()
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        self.migraine.notes = textView.text
     }
 }
 

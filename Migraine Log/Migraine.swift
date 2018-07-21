@@ -178,6 +178,7 @@ extension Migraine {
         Doses of Rizatriptan in the last 90 days: \(Treatment.quarterRztCount)
         
         All recorded migraines:
+        
         """
         
         if let rows = try? DB.shared.connection.prepare(self.table.order(Columns.date.desc)) {

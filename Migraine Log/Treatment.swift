@@ -109,7 +109,7 @@ extension Treatment {
     
     static func historicalMedicineCount(medicine: Medicine, since: Date) -> Int {
         let query = Treatment.table.join(Migraine.table, on: Columns.migraineId == Migraine.table[Migraine.Columns.id]).filter(Migraine.Columns.date > since && Columns.medicine == medicine.rawValue).select(Columns.amount.sum)
-        if let statement = try? DB.shared.connection.prepare(query.asSQL()), let count = try? statement.scalar() as! Int64 {
+        if let statement = try? DB.shared.connection.prepare(query.asSQL()), let result = try? statement.scalar(), let count = result as? Int64 {
             return Int(count)
         }
         return 0

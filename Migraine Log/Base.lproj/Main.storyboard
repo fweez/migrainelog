@@ -35,25 +35,24 @@
                                 <color key="textColor" cocoaTouchSystemColor="darkTextColor"/>
                                 <nil key="highlightedColor"/>
                             </label>
-                            <tableView clipsSubviews="YES" contentMode="scaleToFill" fixedFrame="YES" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Xnj-72-bpQ">
+                            <tableView clipsSubviews="YES" contentMode="scaleToFill" alwaysBounceVertical="YES" dataMode="prototypes" style="plain" separatorStyle="default" rowHeight="-1" estimatedRowHeight="-1" sectionHeaderHeight="28" sectionFooterHeight="28" translatesAutoresizingMaskIntoConstraints="NO" id="Xnj-72-bpQ">
                                 <rect key="frame" x="0.0" y="20" width="375" height="598"/>
-                                <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
                                 <color key="backgroundColor" name="background"/>
                                 <color key="tintColor" name="text"/>
                                 <color key="separatorColor" white="0.33333333333333331" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                 <prototypes>
-                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="newEntryCell" textLabel="pcz-nS-YyD" style="IBUITableViewCellStyleDefault" id="KVl-0y-fmM">
-                                        <rect key="frame" x="0.0" y="28" width="375" height="44"/>
+                                    <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" preservesSuperviewLayoutMargins="YES" selectionStyle="default" indentationWidth="10" reuseIdentifier="newEntryCell" textLabel="pcz-nS-YyD" rowHeight="60" style="IBUITableViewCellStyleDefault" id="KVl-0y-fmM">
+                                        <rect key="frame" x="0.0" y="28" width="375" height="60"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" preservesSuperviewLayoutMargins="YES" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="KVl-0y-fmM" id="ZDt-Uv-ziz">
-                                            <rect key="frame" x="0.0" y="0.0" width="375" height="43.5"/>
+                                            <rect key="frame" x="0.0" y="0.0" width="375" height="59.5"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="🆕" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pcz-nS-YyD">
-                                                    <rect key="frame" x="15" y="0.0" width="345" height="43.5"/>
+                                                <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" insetsLayoutMarginsFromSafeArea="NO" text="🆕 Add Migraine 🆕" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="pcz-nS-YyD">
+                                                    <rect key="frame" x="15" y="0.0" width="345" height="59.5"/>
                                                     <autoresizingMask key="autoresizingMask"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
-                                                    <nil key="textColor"/>
+                                                    <color key="textColor" name="text"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
@@ -61,7 +60,7 @@
                                         <color key="backgroundColor" name="background"/>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" reuseIdentifier="migraineCell" textLabel="zBo-Su-pcY" detailTextLabel="j9c-aV-b9C" rowHeight="50" style="IBUITableViewCellStyleSubtitle" id="c55-R1-hZa" customClass="MigraineCell" customModule="Migraine_Log" customModuleProvider="target">
-                                        <rect key="frame" x="0.0" y="72" width="375" height="50"/>
+                                        <rect key="frame" x="0.0" y="88" width="375" height="50"/>
                                         <autoresizingMask key="autoresizingMask"/>
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" insetsLayoutMarginsFromSafeArea="NO" tableViewCell="c55-R1-hZa" id="jb3-Cc-uyM" customClass="MigraineCell" customModule="Migraine_Log" customModuleProvider="target">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="49.5"/>
@@ -96,7 +95,11 @@
                         <color key="tintColor" white="0.10000000000000001" alpha="1" colorSpace="calibratedWhite"/>
                         <constraints>
                             <constraint firstAttribute="centerX" secondItem="KQZ-1w-vlD" secondAttribute="centerX" id="6BV-lF-sBN"/>
+                            <constraint firstItem="Xnj-72-bpQ" firstAttribute="top" secondItem="PQr-Ze-W5v" secondAttribute="top" id="9Pv-BC-1cN"/>
+                            <constraint firstItem="PQr-Ze-W5v" firstAttribute="trailing" secondItem="Xnj-72-bpQ" secondAttribute="trailing" id="Dkx-jc-2Yl"/>
+                            <constraint firstItem="PQr-Ze-W5v" firstAttribute="bottom" secondItem="Xnj-72-bpQ" secondAttribute="bottom" id="Xdc-rV-Lcd"/>
                             <constraint firstItem="A5M-7J-77L" firstAttribute="top" secondItem="KQZ-1w-vlD" secondAttribute="bottom" constant="8" symbolic="YES" id="cfb-er-3JN"/>
+                            <constraint firstItem="Xnj-72-bpQ" firstAttribute="leading" secondItem="PQr-Ze-W5v" secondAttribute="leading" id="dRh-Qt-rLV"/>
                             <constraint firstItem="A5M-7J-77L" firstAttribute="centerX" secondItem="KQZ-1w-vlD" secondAttribute="centerX" id="e1l-AV-tCB"/>
                             <constraint firstAttribute="centerY" secondItem="KQZ-1w-vlD" secondAttribute="centerY" id="exm-UA-ej4"/>
                         </constraints>
@@ -393,7 +396,7 @@
                         <rect key="frame" x="0.0" y="0.0" width="375" height="667"/>
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <subviews>
-                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" ambiguous="YES" translatesAutoresizingMaskIntoConstraints="NO" id="cOx-lQ-tFF">
+                            <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="cOx-lQ-tFF">
                                 <rect key="frame" x="0.0" y="20" width="375" height="598"/>
                                 <subviews>
                                     <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Last 30 days" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="zwj-jj-wI8">
@@ -445,7 +448,7 @@
                                         <nil key="highlightedColor"/>
                                     </label>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="Xkb-8c-NSL">
-                                        <rect key="frame" x="20" y="223" width="121" height="44"/>
+                                        <rect key="frame" x="20" y="223.5" width="121" height="44"/>
                                         <fontDescription key="fontDescription" style="UICTFontTextStyleTitle1"/>
                                         <state key="normal" title="Export Log"/>
                                         <connections>
@@ -468,6 +471,7 @@
                                     <constraint firstAttribute="trailing" secondItem="zwj-jj-wI8" secondAttribute="trailing" constant="20" id="YT3-LS-5GE"/>
                                     <constraint firstItem="Xkb-8c-NSL" firstAttribute="firstBaseline" secondItem="rVe-h4-p3G" secondAttribute="baseline" constant="40" id="c9c-KK-y4c"/>
                                     <constraint firstItem="6PP-gR-HTt" firstAttribute="leading" secondItem="zwj-jj-wI8" secondAttribute="leading" id="cED-XI-Yhz"/>
+                                    <constraint firstAttribute="bottom" secondItem="Xkb-8c-NSL" secondAttribute="bottom" constant="20" id="dFy-HH-GcF"/>
                                     <constraint firstItem="GGE-sD-frE" firstAttribute="leading" secondItem="zwj-jj-wI8" secondAttribute="leading" id="dGt-KP-hXV"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="GGE-sD-frE" secondAttribute="trailing" id="de2-pc-kdj"/>
                                     <constraint firstAttribute="trailing" relation="greaterThanOrEqual" secondItem="v3r-jv-clM" secondAttribute="trailing" id="gYe-NI-BLa"/>
