@@ -221,7 +221,7 @@ extension MigraineDetailsViewController {
     }
     
     @objc func lengthValueUpdated() {
-        self.migraine.length = self.pickerView.countDownDuration
+        //self.migraine.length = self.pickerView.countDownDuration
         self.lengthUpdated()
     }
 }

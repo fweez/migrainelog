@@ -28,46 +28,53 @@ class DB {
     static var version = 1
     
     init() {
-        if let pluck = try? self.connection.pluck(DB.table), let row = pluck, row[Columns.version] == DB.version {
-            return
-        }
-        
-        // NO UPGRADES!
-//        do {
-//            try self.connection.run(DB.table.drop())
-//            try self.connection.run(Migraine.table.drop())
-//            try self.connection.run(Treatment.table.drop())
-//        } catch {
-//            print("Couldn't drop: \(error)")
-//        }
-        DB.createTable(connection: self.connection)
         Migraine.createTable(connection: self.connection)
         Treatment.createTable(connection: self.connection)
+    }
+    
+    func checkDBVersion() {
+        switch self.connection.userVersion {
+        case 0:
+            self.connection.userVersion = 1
+        case 1:
+            do {
+                try self.connection.run(Migraine.table.addColumn(Migraine.Columns.endDate))
+            } catch let Result.error(_, code, _) where code == SQLITE_ERROR {
+                print("probably a duplicate column name")
+            } catch {
+                assertionFailure()
+            }
+            let query = "select id, length from migraines"
+            if let rows = try? self.connection.prepare(query) {
+                for row in rows {
+                    if let m = Migraine.fetch(migraineId: Int(row[0] as! Int64)) {
+                        m.endDate = m.date.addingTimeInterval(TimeInterval(row[1] as! Double))
+                        m.save()
+                    }
+                }
+            }
+            
+            self.connection.userVersion = 2
+        default:
+            assertionFailure("Unknown database version")
+        }
     }
 }
 
 // MARK: SQlite stuff
 extension DB {
-    struct Columns {
-        static let version = Expression<Int>("version")
-    }
-    
-    static var table = Table("meta")
-    static func createTable(connection: Connection) {
-        do {
-            try connection.run(self.table.create { t in
-                t.column(Columns.version)
-            })
-        } catch {
-            print("didn't create meta table: \(error)")
-        }
-    }
-    
     func run(_ insert: Insert) {
         do {
             try self.connection.run(insert)
         } catch {
             print("Couldn't run insert '\(insert)': \(error)")
         }
+    }
+}
+
+extension Connection {
+    public var userVersion: Int32 {
+        get { return Int32(try! scalar("PRAGMA user_version") as! Int64)}
+        set { try! run("PRAGMA user_version = \(newValue)") }
     }
 }

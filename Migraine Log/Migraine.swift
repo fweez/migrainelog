@@ -12,7 +12,7 @@ import SQLite
 class Migraine {
     var id: Int = -1
     var date: Date
-    var length: TimeInterval
+    var endDate: Date?
     var cause: String
     var notes: String
     var severity: Int {
@@ -22,11 +22,14 @@ class Migraine {
             }
         }
     }
+    var length: TimeInterval {
+        return 0
+    }
     
     static var newMigraineDate = Date(timeIntervalSince1970: 0)
-    init(date: Date = Migraine.newMigraineDate, length: TimeInterval = 0, cause: String = "", notes: String = "", severity: Int = 1) {
+    init(date: Date = Migraine.newMigraineDate, endDate: Date? = nil, cause: String = "", notes: String = "", severity: Int = 1) {
         self.date = date
-        self.length = length
+        self.endDate = endDate
         self.cause = cause
         self.notes = notes
         self.severity = severity
@@ -42,6 +45,13 @@ class Migraine {
     }()
     var formattedDate: String {
         return self.dateFormatter.string(from: self.date)
+    }
+    var formattedEndDate: String {
+        if let endDate = self.endDate {
+            return self.dateFormatter.string(from: endDate)
+        } else {
+            return ""
+        }
     }
     
     private var lengthFormatter: DateComponentsFormatter = {
@@ -68,7 +78,7 @@ extension Migraine {
     struct Columns {
         static let id = Expression<Int>("id")
         static let date = Expression<Date>("date")
-        static let length = Expression<TimeInterval>("length")
+        static let endDate = Expression<Date?>("endDate")
         static let cause = Expression<String>("cause")
         static let notes = Expression<String>("notes")
         static let severity = Expression<Int>("severity")
@@ -80,7 +90,7 @@ extension Migraine {
             try connection.run(self.table.create { t in
                 t.column(Columns.id, primaryKey: true)
                 t.column(Columns.date)
-                t.column(Columns.length)
+                t.column(Columns.endDate)
                 t.column(Columns.cause)
                 t.column(Columns.notes)
                 t.column(Columns.severity)
@@ -91,7 +101,7 @@ extension Migraine {
     }
     
     convenience init(fromRow row: Row) {
-        self.init(date: row[Columns.date], length: row[Columns.length], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
+        self.init(date: row[Columns.date], endDate: row[Columns.endDate], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
         self.id = row[Columns.id]
     }
     
@@ -111,12 +121,12 @@ extension Migraine {
     func save() {
         if self.id != -1 {
             let existing = Migraine.table.filter(Columns.id == self.id)
-            let updateQuery = existing.update(Columns.date <- self.date, Columns.length <- self.length, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
+            let updateQuery = existing.update(Columns.date <- self.date, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
             if let count = try? DB.shared.connection.run(updateQuery), count == 1 { return }
         }
         
         assert(self.id == -1)
-        DB.shared.run(Migraine.table.insert(Columns.date <- self.date, Columns.length <- self.length, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity))
+        DB.shared.run(Migraine.table.insert(Columns.date <- self.date, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity))
     }
     
     static func newestIds(location: Int, length: Int) -> [Int] {
