@@ -279,7 +279,7 @@
                                             <color key="titleColor" name="text"/>
                                         </state>
                                         <connections>
-                                            <action selector="tappedLength:" destination="NPM-6W-foC" eventType="touchUpInside" id="Lue-Ot-0tH"/>
+                                            <action selector="tappedEndDate:" destination="NPM-6W-foC" eventType="touchUpInside" id="4CV-uq-hOv"/>
                                         </connections>
                                     </button>
                                 </subviews>

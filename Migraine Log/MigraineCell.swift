@@ -11,7 +11,7 @@ import UIKit
 class MigraineCell: UITableViewCell {
     var migraine: Migraine! {
         didSet {
-            self.textLabel?.text = self.migraine.formattedDate
+            self.textLabel?.text = self.migraine.formattedStartDate
             self.detailTextLabel?.text = "\(self.migraine.formattedLength)  \(self.migraine.formattedSeverity)"
         }
     }

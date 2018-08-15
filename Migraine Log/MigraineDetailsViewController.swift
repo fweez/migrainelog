@@ -35,7 +35,7 @@ class MigraineDetailsViewController: UIViewController {
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)) , name: .UIKeyboardDidShow, object: nil)
         NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeSize(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
         
-        if self.migraine.date == Migraine.newMigraineDate {
+        if self.migraine.startDate == Migraine.newMigraineDate {
             self.titleLabel.text = "Add Migraine"
         } else {
             self.titleLabel.text = "Edit Migraine"
@@ -56,7 +56,7 @@ class MigraineDetailsViewController: UIViewController {
     override func viewWillDisappear(_ animated: Bool) {
         super.viewWillDisappear(animated)
         
-        if self.migraine.date != Migraine.newMigraineDate {
+        if self.migraine.startDate != Migraine.newMigraineDate {
             self.migraine.save()
         }
         NotificationCenter.default.removeObserver(self)
@@ -68,18 +68,18 @@ class MigraineDetailsViewController: UIViewController {
 // MARK: UI Updates
 extension MigraineDetailsViewController {
     func whenUpdated() {
-        if self.migraine.date == Migraine.newMigraineDate {
+        if self.migraine.startDate == Migraine.newMigraineDate {
             self.whenButton.setTitle("Set time", for: .normal)
         } else {
-            self.whenButton.setTitle(self.migraine.formattedDate, for: .normal)
+            self.whenButton.setTitle(self.migraine.formattedStartDate, for: .normal)
         }
     }
     
     func lengthUpdated() {
         if self.migraine.length == 0 {
-            self.lengthButton.setTitle("Set length", for: .normal)
+            self.lengthButton.setTitle("Set end time", for: .normal)
         } else {
-            self.lengthButton.setTitle(self.migraine.formattedLength, for: .normal)
+            self.lengthButton.setTitle(self.migraine.formattedEndDate, for: .normal)
         }
     }
     
@@ -111,13 +111,6 @@ extension MigraineDetailsViewController {
     }
     
     func dismissPicker() {
-        if self.pickerView.isHidden { return }
-        
-        switch self.pickerView.datePickerMode {
-        case .countDownTimer: self.lengthValueUpdated()
-        case .dateAndTime: self.whenValueUpdated()
-        default: break
-        }
         self.pickerView.isHidden = true
     }
     
@@ -160,10 +153,10 @@ extension MigraineDetailsViewController {
     @IBAction func tappedWhen(_ sender: Any) {
         self.pickerView.datePickerMode = .dateAndTime
         self.pickerView.minuteInterval = 15
-        if self.migraine.date == Migraine.newMigraineDate {
+        if self.migraine.startDate == Migraine.newMigraineDate {
             self.pickerView.date = Date()
         } else {
-            self.pickerView.date = self.migraine.date
+            self.pickerView.date = self.migraine.startDate
         }
         self.pickerView.maximumDate = Date(timeIntervalSinceNow: TimeInterval(60 * self.pickerView.minuteInterval))
         self.pickerView.isHidden = false
@@ -198,13 +191,14 @@ extension MigraineDetailsViewController {
         self.severityUpdated()
     }
     
-    @IBAction func tappedLength(_ sender: Any) {
-        self.pickerView.datePickerMode = .countDownTimer
-        self.pickerView.countDownDuration = self.migraine.length
+    @IBAction func tappedEndDate(_ sender: Any) {
+        self.pickerView.datePickerMode = .dateAndTime
         self.pickerView.minuteInterval = 15
+        self.pickerView.date = self.migraine.endDate ?? Date()
+        self.pickerView.maximumDate = nil
         self.pickerView.isHidden = false
         self.pickerView.removeTarget(nil, action: nil, for: .valueChanged)
-        self.pickerView.addTarget(self, action: #selector(lengthValueUpdated), for: .valueChanged)
+        self.pickerView.addTarget(self, action: #selector(endDateUpdated), for: .valueChanged)
         self.shouldDismissOnScroll = true
     }
     
@@ -216,12 +210,12 @@ extension MigraineDetailsViewController {
 // MARK: Picker handling
 extension MigraineDetailsViewController {
     @objc func whenValueUpdated() {
-        self.migraine.date = self.pickerView.date
+        self.migraine.startDate = self.pickerView.date
         self.whenUpdated()
     }
     
-    @objc func lengthValueUpdated() {
-        //self.migraine.length = self.pickerView.countDownDuration
+    @objc func endDateUpdated() {
+        self.migraine.endDate = self.pickerView.date
         self.lengthUpdated()
     }
 }

@@ -11,7 +11,7 @@ import SQLite
 
 class Migraine {
     var id: Int = -1
-    var date: Date
+    var startDate: Date
     var endDate: Date?
     var cause: String
     var notes: String
@@ -23,12 +23,13 @@ class Migraine {
         }
     }
     var length: TimeInterval {
-        return 0
+        guard let endDate = self.endDate else { return 0 }
+        return endDate.timeIntervalSince(self.startDate)
     }
     
     static var newMigraineDate = Date(timeIntervalSince1970: 0)
-    init(date: Date = Migraine.newMigraineDate, endDate: Date? = nil, cause: String = "", notes: String = "", severity: Int = 1) {
-        self.date = date
+    init(startDate: Date = Migraine.newMigraineDate, endDate: Date? = nil, cause: String = "", notes: String = "", severity: Int = 1) {
+        self.startDate = startDate
         self.endDate = endDate
         self.cause = cause
         self.notes = notes
@@ -43,8 +44,8 @@ class Migraine {
         fmt.timeStyle = .short
         return fmt
     }()
-    var formattedDate: String {
-        return self.dateFormatter.string(from: self.date)
+    var formattedStartDate: String {
+        return self.dateFormatter.string(from: self.startDate)
     }
     var formattedEndDate: String {
         if let endDate = self.endDate {
@@ -101,7 +102,7 @@ extension Migraine {
     }
     
     convenience init(fromRow row: Row) {
-        self.init(date: row[Columns.date], endDate: row[Columns.endDate], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
+        self.init(startDate: row[Columns.date], endDate: row[Columns.endDate], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
         self.id = row[Columns.id]
     }
     
@@ -121,12 +122,12 @@ extension Migraine {
     func save() {
         if self.id != -1 {
             let existing = Migraine.table.filter(Columns.id == self.id)
-            let updateQuery = existing.update(Columns.date <- self.date, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
+            let updateQuery = existing.update(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
             if let count = try? DB.shared.connection.run(updateQuery), count == 1 { return }
         }
         
         assert(self.id == -1)
-        DB.shared.run(Migraine.table.insert(Columns.date <- self.date, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity))
+        DB.shared.run(Migraine.table.insert(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity))
     }
     
     static func newestIds(location: Int, length: Int) -> [Int] {
@@ -198,7 +199,7 @@ extension Migraine {
                 let ibu = m.treatment(medicine: .Ibuprofen)
                 let caf = m.treatment(medicine: .Caffeine)
                 
-                output += "\(dateFormatter.string(from: m.date)) - \(m.formattedLength) migraine, severity \(m.severity)\n"
+                output += "\(dateFormatter.string(from: m.startDate)) - \(m.formattedLength) migraine, severity \(m.severity)\n"
                 if rzt.amount > 0 {
                     output += "\(rzt.amountDescription) rizatriptan\n"
                 }

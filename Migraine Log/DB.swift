@@ -23,9 +23,8 @@ class DB {
         print("Connected to \(path)/migraines.sqlite3")
         return c
     }()
-    static var shared = DB()
     
-    static var version = 1
+    static var shared = DB()
     
     init() {
         Migraine.createTable(connection: self.connection)
@@ -48,13 +47,15 @@ class DB {
             if let rows = try? self.connection.prepare(query) {
                 for row in rows {
                     if let m = Migraine.fetch(migraineId: Int(row[0] as! Int64)) {
-                        m.endDate = m.date.addingTimeInterval(TimeInterval(row[1] as! Double))
+                        m.endDate = m.startDate.addingTimeInterval(TimeInterval(row[1] as! Double))
                         m.save()
                     }
                 }
             }
             
             self.connection.userVersion = 2
+        case 2:
+            return
         default:
             assertionFailure("Unknown database version")
         }
