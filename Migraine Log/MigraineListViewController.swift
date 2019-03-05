@@ -104,18 +104,22 @@ extension MigraineListViewController: UITableViewDelegate {
             assertionFailure()
             return
         }
-        let migraine: Migraine
-        switch section {
-        case .NewEntry: migraine = Migraine()
-        case .Migraines: migraine = self.getMigraine(row: indexPath.row)!
-        }
-        
+
         guard let detailVC = self.storyboard?.instantiateViewController(withIdentifier: "migraineDetailVC") as? MigraineDetailsViewController else {
             assertionFailure()
             return
         }
         
-        detailVC.migraine = migraine
+        switch section {
+        case .NewEntry:
+            let migraine = Migraine()
+            migraine.save()
+            detailVC.migraine = migraine
+        case .Migraines:
+            detailVC.migraine = self.getMigraine(row: indexPath.row)!
+        }
+        
+        
         self.present(detailVC, animated: true, completion: nil)
     }
 }

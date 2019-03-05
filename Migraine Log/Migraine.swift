@@ -111,7 +111,7 @@ extension Migraine {
     }
     
     func treatment(medicine: Medicine) -> Treatment {
-        if let t = Treatment.fetch(in: self, forMedicine: medicine) {
+        if self.id != -1, let t = Treatment.fetch(in: self, forMedicine: medicine) {
             return t
         }
         let t = Treatment(migraine: self, medicine: medicine, amount: 0)
@@ -127,7 +127,12 @@ extension Migraine {
         }
         
         assert(self.id == -1)
-        DB.shared.run(Migraine.table.insert(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity))
+        let insert = Migraine.table.insert(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
+        guard let id = DB.shared.run(insert) else {
+            assertionFailure("Didn't insert a migraine!")
+            return
+        }
+        self.id = id
     }
     
     static func newestIds(location: Int, length: Int) -> [Int] {

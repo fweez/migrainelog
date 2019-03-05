@@ -36,20 +36,30 @@ class DB {
         case 0:
             self.connection.userVersion = 1
         case 1:
+            let oldMigraineTable = Table("migraines_old")
             do {
-                try self.connection.run(Migraine.table.addColumn(Migraine.Columns.endDate))
-            } catch let Result.error(_, code, _) where code == SQLITE_ERROR {
-                print("probably a duplicate column name")
+                try self.connection.run(Migraine.table.rename(oldMigraineTable))
             } catch {
-                assertionFailure()
+                print("Couldn't rename migraines table")
             }
-            let query = "select id, length from migraines"
-            if let rows = try? self.connection.prepare(query) {
+            Migraine.createTable(connection: self.connection)
+            
+            struct OldMigraineColumns {
+                static let id = Expression<Int>("id")
+                static let date = Expression<Date>("date")
+                static let length = Expression<TimeInterval>("length")
+                static let cause = Expression<String>("cause")
+                static let notes = Expression<String>("notes")
+                static let severity = Expression<Int>("severity")
+            }
+            
+            if let rows = try? self.connection.prepare(oldMigraineTable) {
                 for row in rows {
-                    if let m = Migraine.fetch(migraineId: Int(row[0] as! Int64)) {
-                        m.endDate = m.startDate.addingTimeInterval(TimeInterval(row[1] as! Double))
-                        m.save()
-                    }
+                    let len = row[OldMigraineColumns.length]
+                    let startDate = row[OldMigraineColumns.date]
+                    let endDate = startDate.addingTimeInterval(len)
+                    let m = Migraine(startDate: row[OldMigraineColumns.date], endDate: endDate, cause: row[OldMigraineColumns.cause], notes: row[OldMigraineColumns.notes], severity: row[OldMigraineColumns.severity])
+                    m.save()
                 }
             }
             
@@ -64,11 +74,13 @@ class DB {
 
 // MARK: SQlite stuff
 extension DB {
-    func run(_ insert: Insert) {
+    func run(_ insert: Insert) -> Int? {
         do {
-            try self.connection.run(insert)
+            let id = try self.connection.run(insert)
+            return Int(id)
         } catch {
             print("Couldn't run insert '\(insert)': \(error)")
+            return nil
         }
     }
 }

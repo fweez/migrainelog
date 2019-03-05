@@ -36,7 +36,7 @@ enum Medicine: String {
 }
 
 class Treatment {
-    var id: Int
+    var id: Int = -1
     var migraineId: Int
     var medicine: Medicine
     var amount: Int {
@@ -46,7 +46,6 @@ class Treatment {
     }
     
     init(migraineId: Int, medicine: Medicine, amount: Int) {
-        self.id = -1
         self.migraineId = migraineId
         self.medicine = medicine
         self.amount = amount
@@ -94,10 +93,17 @@ extension Treatment {
     func save() {
         if self.id != -1 {
             let existing = Treatment.table.filter(Columns.id == self.id)
-            if let count = try? DB.shared.connection.run(existing.update(Columns.amount <- self.amount)), count == 1 { return }
+            if let count = try? DB.shared.connection.run(existing.update(Columns.amount <- self.amount)) {
+                assert(count == 1, "Didn't update?!")
+            }
+            return
         }
         
-        DB.shared.run(Treatment.table.insert(Columns.migraineId <- self.migraineId, Columns.medicine <- self.medicine.rawValue, Columns.amount <- self.amount))
+        guard let id = DB.shared.run(Treatment.table.insert(Columns.migraineId <- self.migraineId, Columns.medicine <- self.medicine.rawValue, Columns.amount <- self.amount)) else {
+            assertionFailure("Couldn't insert treatment")
+            return
+        }
+        self.id = id
     }
     
     static func fetch(in migraine: Migraine, forMedicine medicine: Medicine) -> Treatment? {
