@@ -30,10 +30,10 @@ class MigraineDetailsViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: .UIKeyboardWillShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(ignored:)), name: .UIKeyboardWillHide, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)) , name: .UIKeyboardDidShow, object: nil)
-        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeSize(notification:)), name: .UIKeyboardWillChangeFrame, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIWindow.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(ignored:)), name: UIWindow.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)) , name: UIWindow.keyboardDidShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeSize(notification:)), name: UIWindow.keyboardWillChangeFrameNotification, object: nil)
         
         if self.migraine.startDate == Migraine.newMigraineDate {
             self.titleLabel.text = "Add Migraine"
@@ -41,7 +41,7 @@ class MigraineDetailsViewController: UIViewController {
             self.titleLabel.text = "Edit Migraine"
         }
         
-        self.notesView.contentInset = UIEdgeInsetsMake(0, 0, 0, 0)
+        self.notesView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: 0, right: 0)
         
         self.whenUpdated()
         self.rztUpdated()
@@ -138,9 +138,9 @@ extension MigraineDetailsViewController {
     }
     
     func updateScrollRect(fromNotification notification: NSNotification) {
-        if let userinfo = notification.userInfo, let value = userinfo[UIKeyboardFrameEndUserInfoKey] {
+        if let userinfo = notification.userInfo, let value = userinfo[UIResponder.keyboardFrameEndUserInfoKey] {
             let kbSize = (value as! NSValue).cgRectValue.size
-            self.scrollView.contentInset = UIEdgeInsetsMake(0, 0, kbSize.height, 0)
+            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: kbSize.height, right: 0)
             self.scrollView.scrollRectToVisible(self.notesView.frame, animated: true)
             self.shouldDismissOnScroll = false
         }

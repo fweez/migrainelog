@@ -107,7 +107,7 @@ extension Treatment {
     }
     
     static func fetch(in migraine: Migraine, forMedicine medicine: Medicine) -> Treatment? {
-        if let pluck = try? DB.shared.connection.pluck(self.table.filter(Columns.migraineId == migraine.id && Columns.medicine == medicine.rawValue)), let row = pluck {
+        if let row = try? DB.shared.connection.pluck(self.table.filter(Columns.migraineId == migraine.id && Columns.medicine == medicine.rawValue)) {
             return Treatment(fromRow: row)
         }
         return nil

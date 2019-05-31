@@ -12,24 +12,24 @@
 		94382B68210124BF00606FF7 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B67210124BF00606FF7 /* DB.swift */; };
 		94382B6A21012DD800606FF7 /* MigraineDetailsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B6921012DD800606FF7 /* MigraineDetailsViewController.swift */; };
 		94382B6C2102C1C000606FF7 /* MigraineCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B6B2102C1C000606FF7 /* MigraineCell.swift */; };
+		94416FF5229F291200366F5C /* MigraineListViewModel.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94416FF4229F291200366F5C /* MigraineListViewModel.swift */; };
 		94A0015221011AC400F2819E /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A0015121011AC400F2819E /* AppDelegate.swift */; };
 		94A0015421011AC400F2819E /* MigraineListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A0015321011AC400F2819E /* MigraineListViewController.swift */; };
 		94A0015621011AC400F2819E /* StatsViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94A0015521011AC400F2819E /* StatsViewController.swift */; };
 		94A0015921011AC400F2819E /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94A0015721011AC400F2819E /* Main.storyboard */; };
 		94A0015B21011AC600F2819E /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 94A0015A21011AC600F2819E /* Assets.xcassets */; };
 		94A0015E21011AC600F2819E /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 94A0015C21011AC600F2819E /* LaunchScreen.storyboard */; };
-		B54F3D5692C6DD66D18AA27F /* Pods_Migraine_Log.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 261916AD5943F3565985E849 /* Pods_Migraine_Log.framework */; };
+		DB13E2C87D48BEB671DA7C74 /* Pods_Migraine_Log.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = AC031D6EB4D2A68EBAA39A36 /* Pods_Migraine_Log.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		1FB809C7D4397774A2144F8A /* Pods-Migraine Log.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Migraine Log.release.xcconfig"; path = "Pods/Target Support Files/Pods-Migraine Log/Pods-Migraine Log.release.xcconfig"; sourceTree = "<group>"; };
-		261916AD5943F3565985E849 /* Pods_Migraine_Log.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Migraine_Log.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		29ECA7B2C59F82054D05CC1E /* Pods-Migraine Log.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Migraine Log.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Migraine Log/Pods-Migraine Log.debug.xcconfig"; sourceTree = "<group>"; };
+		71AFB17288F9D7E4859EFDF4 /* Pods-Migraine Log.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Migraine Log.debug.xcconfig"; path = "Target Support Files/Pods-Migraine Log/Pods-Migraine Log.debug.xcconfig"; sourceTree = "<group>"; };
 		94382B6321011C7600606FF7 /* Migraine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migraine.swift; sourceTree = "<group>"; };
 		94382B6521011E4200606FF7 /* Treatment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Treatment.swift; sourceTree = "<group>"; };
 		94382B67210124BF00606FF7 /* DB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
 		94382B6921012DD800606FF7 /* MigraineDetailsViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigraineDetailsViewController.swift; sourceTree = "<group>"; };
 		94382B6B2102C1C000606FF7 /* MigraineCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigraineCell.swift; sourceTree = "<group>"; };
+		94416FF4229F291200366F5C /* MigraineListViewModel.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigraineListViewModel.swift; sourceTree = "<group>"; };
 		94A0014E21011AC400F2819E /* Migraine Log.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Migraine Log.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		94A0015121011AC400F2819E /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		94A0015321011AC400F2819E /* MigraineListViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = MigraineListViewController.swift; sourceTree = "<group>"; };
@@ -38,6 +38,8 @@
 		94A0015A21011AC600F2819E /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		94A0015D21011AC600F2819E /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		94A0015F21011AC600F2819E /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		AC031D6EB4D2A68EBAA39A36 /* Pods_Migraine_Log.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Migraine_Log.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		E33FBECA8973C3AD15663D3A /* Pods-Migraine Log.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Migraine Log.release.xcconfig"; path = "Target Support Files/Pods-Migraine Log/Pods-Migraine Log.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,20 +47,28 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				B54F3D5692C6DD66D18AA27F /* Pods_Migraine_Log.framework in Frameworks */,
+				DB13E2C87D48BEB671DA7C74 /* Pods_Migraine_Log.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		65733BBBC10B40736D6BE9DE /* Pods */ = {
+		8E9DB8894DBCB6425224BB81 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				29ECA7B2C59F82054D05CC1E /* Pods-Migraine Log.debug.xcconfig */,
-				1FB809C7D4397774A2144F8A /* Pods-Migraine Log.release.xcconfig */,
+				71AFB17288F9D7E4859EFDF4 /* Pods-Migraine Log.debug.xcconfig */,
+				E33FBECA8973C3AD15663D3A /* Pods-Migraine Log.release.xcconfig */,
 			);
-			name = Pods;
+			path = Pods;
+			sourceTree = "<group>";
+		};
+		9337AB5B24A0D089C92CF4DF /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				AC031D6EB4D2A68EBAA39A36 /* Pods_Migraine_Log.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 		94A0014521011AC400F2819E = {
@@ -66,8 +76,8 @@
 			children = (
 				94A0015021011AC400F2819E /* Migraine Log */,
 				94A0014F21011AC400F2819E /* Products */,
-				65733BBBC10B40736D6BE9DE /* Pods */,
-				FD9092133ACFD2C479E07050 /* Frameworks */,
+				8E9DB8894DBCB6425224BB81 /* Pods */,
+				9337AB5B24A0D089C92CF4DF /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -87,6 +97,7 @@
 				94382B6321011C7600606FF7 /* Migraine.swift */,
 				94382B6521011E4200606FF7 /* Treatment.swift */,
 				94A0015321011AC400F2819E /* MigraineListViewController.swift */,
+				94416FF4229F291200366F5C /* MigraineListViewModel.swift */,
 				94382B6921012DD800606FF7 /* MigraineDetailsViewController.swift */,
 				94A0015521011AC400F2819E /* StatsViewController.swift */,
 				94382B6B2102C1C000606FF7 /* MigraineCell.swift */,
@@ -98,14 +109,6 @@
 			path = "Migraine Log";
 			sourceTree = "<group>";
 		};
-		FD9092133ACFD2C479E07050 /* Frameworks */ = {
-			isa = PBXGroup;
-			children = (
-				261916AD5943F3565985E849 /* Pods_Migraine_Log.framework */,
-			);
-			name = Frameworks;
-			sourceTree = "<group>";
-		};
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
@@ -113,11 +116,11 @@
 			isa = PBXNativeTarget;
 			buildConfigurationList = 94A0016221011AC600F2819E /* Build configuration list for PBXNativeTarget "Migraine Log" */;
 			buildPhases = (
-				3DFFEE070308224A4C2EB3E6 /* [CP] Check Pods Manifest.lock */,
+				2340A508284E150B52CB1496 /* [CP] Check Pods Manifest.lock */,
 				94A0014A21011AC400F2819E /* Sources */,
 				94A0014B21011AC400F2819E /* Frameworks */,
 				94A0014C21011AC400F2819E /* Resources */,
-				DD315EF30697FAC4E35A046B /* [CP] Embed Pods Frameworks */,
+				310EB343E53CF15B02EF9CA9 /* [CP] Embed Pods Frameworks */,
 			);
 			buildRules = (
 			);
@@ -175,16 +178,20 @@
 /* End PBXResourcesBuildPhase section */
 
 /* Begin PBXShellScriptBuildPhase section */
-		3DFFEE070308224A4C2EB3E6 /* [CP] Check Pods Manifest.lock */ = {
+		2340A508284E150B52CB1496 /* [CP] Check Pods Manifest.lock */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+			);
+			inputFileListPaths = (
 			);
 			inputPaths = (
 				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
 				"${PODS_ROOT}/Manifest.lock",
 			);
 			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
 			outputPaths = (
 				"$(DERIVED_FILE_DIR)/Pods-Migraine Log-checkManifestLockResult.txt",
 			);
@@ -193,22 +200,32 @@
 			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
 			showEnvVarsInLog = 0;
 		};
-		DD315EF30697FAC4E35A046B /* [CP] Embed Pods Frameworks */ = {
+		310EB343E53CF15B02EF9CA9 /* [CP] Embed Pods Frameworks */ = {
 			isa = PBXShellScriptBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
 			);
+			inputFileListPaths = (
+			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Migraine Log/Pods-Migraine Log-frameworks.sh",
+				"${PODS_ROOT}/Target Support Files/Pods-Migraine Log/Pods-Migraine Log-frameworks.sh",
+				"${BUILT_PRODUCTS_DIR}/RxCocoa/RxCocoa.framework",
+				"${BUILT_PRODUCTS_DIR}/RxRelay/RxRelay.framework",
+				"${BUILT_PRODUCTS_DIR}/RxSwift/RxSwift.framework",
 				"${BUILT_PRODUCTS_DIR}/SQLite.swift/SQLite.framework",
 			);
 			name = "[CP] Embed Pods Frameworks";
+			outputFileListPaths = (
+			);
 			outputPaths = (
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxCocoa.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxRelay.framework",
+				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/RxSwift.framework",
 				"${TARGET_BUILD_DIR}/${FRAMEWORKS_FOLDER_PATH}/SQLite.framework",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Migraine Log/Pods-Migraine Log-frameworks.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Migraine Log/Pods-Migraine Log-frameworks.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -221,6 +238,7 @@
 				94A0015621011AC400F2819E /* StatsViewController.swift in Sources */,
 				94382B6C2102C1C000606FF7 /* MigraineCell.swift in Sources */,
 				94382B6A21012DD800606FF7 /* MigraineDetailsViewController.swift in Sources */,
+				94416FF5229F291200366F5C /* MigraineListViewModel.swift in Sources */,
 				94382B6421011C7600606FF7 /* Migraine.swift in Sources */,
 				94A0015221011AC400F2819E /* AppDelegate.swift in Sources */,
 				94382B6621011E4200606FF7 /* Treatment.swift in Sources */,
@@ -367,38 +385,40 @@
 		};
 		94A0016321011AC600F2819E /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 29ECA7B2C59F82054D05CC1E /* Pods-Migraine Log.debug.xcconfig */;
+			baseConfigurationReference = 71AFB17288F9D7E4859EFDF4 /* Pods-Migraine Log.debug.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PH278T7MS2;
 				INFOPLIST_FILE = "Migraine Log/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "rmf.Migraine-Log";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Debug;
 		};
 		94A0016421011AC600F2819E /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 1FB809C7D4397774A2144F8A /* Pods-Migraine Log.release.xcconfig */;
+			baseConfigurationReference = E33FBECA8973C3AD15663D3A /* Pods-Migraine Log.release.xcconfig */;
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				CODE_SIGN_STYLE = Automatic;
 				DEVELOPMENT_TEAM = PH278T7MS2;
 				INFOPLIST_FILE = "Migraine Log/Info.plist";
+				IPHONEOS_DEPLOYMENT_TARGET = 12.2;
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 				);
 				PRODUCT_BUNDLE_IDENTIFIER = "rmf.Migraine-Log";
 				PRODUCT_NAME = "$(TARGET_NAME)";
-				SWIFT_VERSION = 4.0;
+				SWIFT_VERSION = 5.0;
 				TARGETED_DEVICE_FAMILY = "1,2";
 			};
 			name = Release;

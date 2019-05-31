@@ -7,31 +7,49 @@
 //
 
 import UIKit
+import RxCocoa
+import RxSwift
 
-class MigraineListViewController: UIViewController {
-    @IBOutlet weak var migraineList: UITableView!
-
-    var ids: [Int]!
-    var migraineCache: [Int: Migraine] = [:]
+class MigraineListViewController: UIViewController, UITableViewDelegate {
+    var migraineList: UITableView = UITableView()
     
-    override func viewWillAppear(_ animated: Bool) {
-        super.viewWillAppear(animated)
-        self.refreshMigraineList()
-    }
+    var viewModel = MigraineListViewModel()
+    var disposeBag = DisposeBag()
     
     override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
     
-    func getMigraine(row: Int) -> Migraine? {
-        let migraineId = self.ids[row]
-        if let migraine = self.migraineCache[migraineId] { return migraine }
-        let migraine = Migraine.fetch(migraineId: migraineId)
-        self.migraineCache[migraineId] = migraine
-        return migraine
+    override func loadView() {
+        view = migraineList
     }
     
-    func refreshMigraineList() {
-        self.ids = Migraine.newestIds(location: 0, length: 1000)
-        self.migraineList.reloadSections(IndexSet(integer: MigraineListSections.Migraines.rawValue), with: .none)
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        viewModel.items
+            .bind(to: migraineList.rx.items(cellIdentifier: "migraineCell", cellType: MigraineCell.self)) { (row, element, cell) in
+                cell.migraine = element
+            }
+            .disposed(by: disposeBag)
+        migraineList.rx
+            .itemSelected
+            .subscribe { genericEvent in
+                _ = genericEvent.map { [unowned self] indexPath in
+                    self.migraineList.deselectRow(at: indexPath, animated: true)
+                }
+            }
+            .disposed(by: disposeBag)
+        migraineList.rx
+            .modelSelected(Migraine.self)
+            .subscribe { migraineEvent in
+                _ = migraineEvent.map({ [unowned self] migraine in
+                    guard let detailVC = self.storyboard?.instantiateViewController(withIdentifier: "migraineDetailVC") as? MigraineDetailsViewController else {
+                        assertionFailure()
+                        return
+                    }
+                    detailVC.migraine = migraine
+                    self.present(detailVC, animated: true, completion: nil)
+                })
+            }
+            .disposed(by: disposeBag)
     }
 }
 
@@ -40,9 +58,10 @@ enum MigraineListSections: Int {
     case Migraines
 }
 
+/*
 extension MigraineListViewController: UITableViewDataSource {
     func numberOfSections(in tableView: UITableView) -> Int {
-        return 2
+        return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
@@ -81,7 +100,7 @@ extension MigraineListViewController: UITableViewDataSource {
         return MigraineListSections(rawValue: indexPath.section) == .Migraines
     }
     
-    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCell.EditingStyle {
         return .delete
     }
     
@@ -89,7 +108,7 @@ extension MigraineListViewController: UITableViewDataSource {
         return false
     }
     
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         assert(editingStyle == .delete)
         guard let migraine = self.getMigraine(row: indexPath.row) else { return }
         migraine.delete()
@@ -123,3 +142,4 @@ extension MigraineListViewController: UITableViewDelegate {
         self.present(detailVC, animated: true, completion: nil)
     }
 }
+*/

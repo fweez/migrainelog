@@ -147,7 +147,7 @@ extension Migraine {
     }
     
     static func fetch(migraineId: Int) -> Migraine? {
-        if let pluck = try? DB.shared.connection.pluck(self.table.filter(Columns.id == migraineId)), let row = pluck {
+        if let row = try? DB.shared.connection.pluck(self.table.filter(Columns.id == migraineId)) {
             return Migraine(fromRow: row)
         }
         return nil
