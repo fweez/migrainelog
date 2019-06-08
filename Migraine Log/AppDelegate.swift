@@ -23,8 +23,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         let tabController = UITabBarController()
         window.rootViewController = tabController
+        let navController = UINavigationController(rootViewController: MigraineListViewController())
+        
         tabController.viewControllers = [
-            MigraineListViewController(),
+            navController,
             StatsViewController()
         ]
         window.makeKeyAndVisible()

@@ -9,4 +9,5 @@ target 'Migraine Log' do
   pod 'SQLite.swift', '~> 0.12.0'
   pod 'RxSwift', '~> 5'
   pod 'RxCocoa', '~> 5'
+  pod 'RxDataSources', '~> 4.0'
 end

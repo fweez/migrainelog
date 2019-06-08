@@ -135,6 +135,14 @@ extension Migraine {
         self.id = id
     }
     
+    static func allIds() -> [Int] {
+        let query = self.table
+            .select(Columns.id, Columns.date)
+            .order(Columns.date.desc)
+        if let rows = try? DB.shared.connection.prepare(query) { return rows.map { $0[Columns.id] } }
+        return []
+    }
+    
     static func newestIds(location: Int, length: Int) -> [Int] {
         let query = self.table
             .select(Columns.id, Columns.date)

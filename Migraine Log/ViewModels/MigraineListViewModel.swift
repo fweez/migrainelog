@@ -10,9 +10,5 @@ import Foundation
 import RxSwift
 
 struct MigraineListViewModel {
-    var items = Observable.just(
-        Migraine
-            .newestIds(location: 0, length: 100)
-            .compactMap { Migraine.fetch(migraineId: $0) }
-    )
+    var ids: Observable<[Int]> = Observable.of(Migraine.allIds())
 }
