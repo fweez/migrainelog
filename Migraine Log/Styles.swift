@@ -35,19 +35,24 @@ func titleFont(for textStyle: UIFont.TextStyle) -> UIFont {
 
 func barButtonFont(for textStyle: UIFont.TextStyle) -> UIFont {
     let fontName = "LibreFranklin-ExtraLight"
-    return font(named: fontName, for: textStyle, baseSize: 12)
+    return font(named: fontName, for: textStyle, baseSize: 18)
 }
 
 func baseNavbarStyle(_ navbar: UINavigationBar?) {
     navbar?.barTintColor = UIColor.black
     navbar?.tintColor = UIColor.lightGray
     
-    let titleAttribs = [
+    let largeTitleAttribs = [
         NSAttributedString.Key.foregroundColor: UIColor.lightGray,
         NSAttributedString.Key.font: titleFont(for: .largeTitle),
     ]
-    navbar?.largeTitleTextAttributes = titleAttribs
-    navbar?.titleTextAttributes = titleAttribs
+    navbar?.largeTitleTextAttributes = largeTitleAttribs
+    
+    let smallTitleAttribs = [
+        NSAttributedString.Key.foregroundColor: UIColor.red,
+        NSAttributedString.Key.font: barButtonFont(for: .body),
+    ]
+    navbar?.titleTextAttributes = smallTitleAttribs
 }
 
 func tallNavbarStyle(_ navbar: UINavigationBar?) {
