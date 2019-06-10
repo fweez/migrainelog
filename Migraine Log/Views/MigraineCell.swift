@@ -24,5 +24,7 @@ class MigraineCell: UITableViewCell {
         viewModel.description
             .drive(detailTextLabel!.rx.text)
             .disposed(by: disposeBag)
+        
+        cellStyle(self)
     }
 }

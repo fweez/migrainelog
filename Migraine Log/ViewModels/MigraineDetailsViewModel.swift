@@ -45,23 +45,24 @@ struct MigraineDetailsViewModel {
             .map { "Migraine on \($0.formattedStartDate)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedStart = migraine
-            .map { $0.formattedStartDate }
+            .map { "Started: \($0.formattedStartDate)" }
+            .asDriver(onErrorJustReturn: "Error")
+        formattedEnd = migraine
+            .map { "Ended: \($0.formattedEndDate)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedRizatriptanAmount = migraine
-            .map { $0.treatment(medicine: .Rizatriptan).amountDescription }
+            .map { "Rizatriptan: \($0.treatment(medicine: .Rizatriptan).amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedCaffeineAmount = migraine
-            .map { $0.treatment(medicine: .Caffeine).amountDescription }
+            .map { "Caffeine: \($0.treatment(medicine: .Caffeine).amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedIbuprofenAmount = migraine
-            .map { $0.treatment(medicine: .Ibuprofen).amountDescription }
+            .map { "Ibuprofen: \($0.treatment(medicine: .Ibuprofen).amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedSeverity = migraine
             .map { $0.formattedSeverity }
             .asDriver(onErrorJustReturn: "Error")
-        formattedEnd = migraine
-            .map { $0.formattedEndDate }
-            .asDriver(onErrorJustReturn: "Error")
+        
         cause = migraine
             .map { $0.cause }
         notes = migraine

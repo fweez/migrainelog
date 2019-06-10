@@ -14,6 +14,8 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
     var migraineList: UITableView = UITableView()
     var detailVC: DetailsViewController = DetailsViewController(nibName: nil, bundle: nil)
     
+    private var addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
+    
     var viewModel = MigraineListViewModel()
     var disposeBag = DisposeBag()
     
@@ -21,10 +23,19 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
     
     override func loadView() {
         view = migraineList
+        navigationItem.rightBarButtonItem = addButton
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        tallNavbarStyle(navigationController?.navigationBar)
+        baseTabbarstyle(tabBarController?.tabBar)
+        baseBackgroundStyle(view)
+        title = "Recent Migraines"
+        bindData()
+    }
+    
+    private func bindData() {
         viewModel.ids
             .bind(to: migraineList.rx.items) { (tableView: UITableView, tvRowIdx: Int, migraineId: Int) in
                 return MigraineCell(migraineId: migraineId)
@@ -35,6 +46,7 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
         selection
             .subscribe(onNext: { [weak self] migraineId in
                 guard let vc = self?.detailVC else { return }
+                vc.navigationItem.largeTitleDisplayMode = .never
                 self?.navigationController?.pushViewController(vc, animated: true)
             })
             .disposed(by: disposeBag)
@@ -48,8 +60,7 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
             })
             .disposed(by: disposeBag)
         
-        let addButton = UIBarButtonItem(barButtonSystemItem: .add, target: nil, action: nil)
-        navigationItem.rightBarButtonItem = addButton
+        
         addButton.rx.tap
             .subscribe { [weak self] _ in
                 guard let vc = self?.detailVC else { return }
