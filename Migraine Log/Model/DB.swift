@@ -58,7 +58,7 @@ class DB {
                     let len = row[OldMigraineColumns.length]
                     let startDate = row[OldMigraineColumns.date]
                     let endDate = startDate.addingTimeInterval(len)
-                    let m = Migraine(startDate: row[OldMigraineColumns.date], endDate: endDate, cause: row[OldMigraineColumns.cause], notes: row[OldMigraineColumns.notes], severity: row[OldMigraineColumns.severity])
+                    var m = Migraine(startDate: row[OldMigraineColumns.date], endDate: endDate, cause: row[OldMigraineColumns.cause], notes: row[OldMigraineColumns.notes], severity: row[OldMigraineColumns.severity])
                     m.save()
                 }
             }

@@ -120,6 +120,7 @@ class DetailsViewController: UIViewController {
         viewModel.notes
             .bind(to: notesView.rx.text)
             .disposed(by: disposeBag)
+        
     }
     
     override func viewDidLoad() {

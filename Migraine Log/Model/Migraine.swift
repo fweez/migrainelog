@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-class Migraine {
+struct Migraine {
     var id: Int = -1
     var startDate: Date
     var endDate: Date?
@@ -101,7 +101,7 @@ extension Migraine {
         }
     }
     
-    convenience init(fromRow row: Row) {
+    init(fromRow row: Row) {
         self.init(startDate: row[Columns.date], endDate: row[Columns.endDate], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
         self.id = row[Columns.id]
     }
@@ -119,7 +119,7 @@ extension Migraine {
         return t
     }
     
-    func save() {
+    mutating func save() {
         if self.id != -1 {
             let existing = Migraine.table.filter(Columns.id == self.id)
             let updateQuery = existing.update(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)

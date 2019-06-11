@@ -71,7 +71,7 @@ struct MigraineDetailsViewModel {
         let combinedInputs = Observable.combineLatest(migraine, startTime, endTime, cause, notes)
         save.withLatestFrom(combinedInputs)
             .subscribe(onNext: { inputs in
-                let (migraine, startTime, endTime, cause, notes) = inputs
+                var (migraine, startTime, endTime, cause, notes) = inputs
                 migraine.startDate = startTime
                 migraine.endDate = endTime
                 migraine.cause = cause
