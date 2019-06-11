@@ -144,8 +144,8 @@ struct MigraineDetailsViewModel {
         let notesInfo = Observable.combineLatest(setNotes, migraine)
         saveNotes.withLatestFrom(notesInfo)
             .map { (t: (String, Migraine)) -> Int in
-                let (newCause, migraine) = t
-                return migraine.updateCause(newCause)
+                let (newNotes, migraine) = t
+                return migraine.updateNotes(newNotes)
             }
             .asDriver(onErrorJustReturn: -1)
             .drive(migraineId)

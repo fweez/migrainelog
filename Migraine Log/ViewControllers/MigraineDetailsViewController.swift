@@ -41,7 +41,8 @@ class DetailsViewController: UIViewController {
         view = UIView()
         
         scrollView = UIScrollView()
-        scrollView.alwaysBounceVertical = true
+        scrollView.keyboardDismissMode = .interactive
+        
         prepareForAutolayout(scrollView)
         view.addSubview(scrollView)
         
@@ -145,6 +146,25 @@ class DetailsViewController: UIViewController {
             .asDriver()
             .drive(viewModel.saveCause)
             .disposed(by: disposeBag)
+        causeView.rx.controlEvent(.editingDidBegin)
+            .subscribe(onNext: { _ in self.shouldDismissOnScroll = false })
+            .disposed(by: disposeBag)
+        notesView.rx.text.changed
+            .asDriver(onErrorJustReturn: "")
+            .map { $0 ?? "" }
+            .drive(viewModel.setNotes)
+            .disposed(by: disposeBag)
+        notesView.rx.didEndEditing
+            .asDriver()
+            .drive(viewModel.saveNotes)
+            .disposed(by: disposeBag)
+        notesView.rx.didBeginEditing
+            .subscribe(onNext: { _ in self.shouldDismissOnScroll = false })
+            .disposed(by: disposeBag)
+        
+        // UI INTERACTIONS
+        
+        
     }
     
     override func viewDidLoad() {
@@ -177,40 +197,6 @@ class DetailsViewController: UIViewController {
         [startedButton, endedButton, rztButton, cafButton, ibuButton, severityButton].forEach(baseButtonStyle)
         [causeView, notesView].forEach(textAreaStyle)
     }
-    
-    override func viewDidAppear(_ animated: Bool) {
-        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIWindow.keyboardWillShowNotification, object: nil)
-        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(ignored:)), name: UIWindow.keyboardWillHideNotification, object: nil)
-        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardDidShow(notification:)) , name: UIWindow.keyboardDidShowNotification, object: nil)
-        //        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeSize(notification:)), name: UIWindow.keyboardWillChangeFrameNotification, object: nil)
-    }
-    
-    // MARK: Keyboard show/hide stuff
-    @objc func keyboardWillShow(notification: NSNotification) {
-        self.updateScrollRect(fromNotification: notification)
-    }
-    
-    @objc func keyboardWillChangeSize(notification: NSNotification) {
-        self.updateScrollRect(fromNotification: notification)
-    }
-    
-    @objc func keyboardDidShow(notification: NSNotification) {
-        self.shouldDismissOnScroll = true
-    }
-    
-    @objc func keyboardWillHide(ignored: NSNotification) {
-        self.scrollView.contentInset = UIEdgeInsets.zero
-    }
-    
-    func updateScrollRect(fromNotification notification: NSNotification) {
-        //        if let userinfo = notification.userInfo, let value = userinfo[UIResponder.keyboardFrameEndUserInfoKey] {
-        //            let kbSize = (value as! NSValue).cgRectValue.size
-        //            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: kbSize.height, right: 0)
-        //            self.scrollView.scrollRectToVisible(self.notesView.frame, animated: true)
-        //            self.shouldDismissOnScroll = false
-        //        }
-    }
-    
 }
 
 /*
