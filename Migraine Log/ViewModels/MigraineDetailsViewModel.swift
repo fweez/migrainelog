@@ -13,12 +13,14 @@ import RxCocoa
 struct MigraineDetailsViewModel {
     // inputs
     var migraineId = BehaviorRelay<Int>(value: -1)
-    var save = PublishSubject<Void>()
-    var startTime = PublishSubject<Date>()
-    var endTime = PublishSubject<Date>()
-    var rizatriptanAmount = PublishSubject<Int>()
-    var caffeineAmount = PublishSubject<Int>()
-    var ibuprofenAmount = PublishSubject<Int>()
+    var increaseRizatriptan = PublishSubject<Void>()
+    var increaseCaffeine = PublishSubject<Void>()
+    var increaseIbuprofen = PublishSubject<Void>()
+    var increaseSeverity = PublishSubject<Void>()
+    var setCause = PublishSubject<String>()
+    var saveCause = PublishSubject<Void>()
+    var setNotes = PublishSubject<String>()
+    var saveNotes = PublishSubject<Void>()
     
     // outputs
     var title: Driver<String>
@@ -28,18 +30,56 @@ struct MigraineDetailsViewModel {
     var formattedIbuprofenAmount: Driver<String>
     var formattedSeverity: Driver<String>
     var formattedEnd: Driver<String>
-    
-    // input-outputs
-    var cause: Observable<String>
-    var notes: Observable<String>
+    var cause: Driver<String>
+    var notes: Driver<String>
     
     private var migraine: Observable<Migraine>
+    private var rizatriptanId: BehaviorRelay<Int> = BehaviorRelay(value: -1)
+    private var rizatriptan: Observable<Treatment>
+    private var caffeineId: BehaviorRelay<Int> = BehaviorRelay(value: -1)
+    private var caffeine: Observable<Treatment>
+    private var ibuprofenId: BehaviorRelay<Int> = BehaviorRelay(value: -1)
+    private var ibuprofen: Observable<Treatment>
     
     private let disposeBag = DisposeBag()
     
     init() {
         migraine = migraineId
-            .map { Migraine.fetch(migraineId: $0) ?? Migraine() }
+            .flatMap { id -> Observable<Migraine> in
+                let m = Migraine.fetch(migraineId: id) ?? Migraine()
+                return Observable.of(m)
+            }
+            .share(replay: 1, scope: .forever)
+        
+        migraine
+            .map { $0.treatment(medicine: .Rizatriptan).id }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(rizatriptanId)
+            .disposed(by: disposeBag)
+        migraine
+            .map { $0.treatment(medicine: .Caffeine).id }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(caffeineId)
+            .disposed(by: disposeBag)
+        migraine
+            .map { $0.treatment(medicine: .Ibuprofen).id }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(ibuprofenId)
+            .disposed(by: disposeBag)
+        
+        let treatmentFetcher = { (id: Int) -> Observable<Treatment> in
+            let t = Treatment.fetch(id: id) ?? Treatment(migraineId: -1, medicine: .Rizatriptan, amount: 0)
+            return Observable.of(t)
+        }
+        
+        rizatriptan = rizatriptanId
+            .flatMap(treatmentFetcher)
+            .share(replay: 1, scope: .forever)
+        caffeine = caffeineId
+            .flatMap(treatmentFetcher)
+            .share(replay: 1, scope: .forever)
+        ibuprofen = ibuprofenId
+            .flatMap(treatmentFetcher)
             .share(replay: 1, scope: .forever)
         title = migraine
             .map { "Migraine on \($0.formattedStartDate)" }
@@ -50,60 +90,65 @@ struct MigraineDetailsViewModel {
         formattedEnd = migraine
             .map { "Ended: \($0.formattedEndDate)" }
             .asDriver(onErrorJustReturn: "Error")
-        formattedRizatriptanAmount = migraine
-            .map { "Rizatriptan: \($0.treatment(medicine: .Rizatriptan).amountDescription)" }
+        formattedRizatriptanAmount = rizatriptan
+            .map { "Rizatriptan: \($0.amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
-        formattedCaffeineAmount = migraine
-            .map { "Caffeine: \($0.treatment(medicine: .Caffeine).amountDescription)" }
+        formattedCaffeineAmount = caffeine
+            .map { "Caffeine: \($0.amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
-        formattedIbuprofenAmount = migraine
-            .map { "Ibuprofen: \($0.treatment(medicine: .Ibuprofen).amountDescription)" }
+        formattedIbuprofenAmount = ibuprofen
+            .map { "Ibuprofen: \($0.amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedSeverity = migraine
             .map { $0.formattedSeverity }
             .asDriver(onErrorJustReturn: "Error")
-        
         cause = migraine
             .map { $0.cause }
+            .asDriver(onErrorJustReturn: "")
         notes = migraine
             .map { $0.notes }
+            .asDriver(onErrorJustReturn: "")
         
-        let combinedInputs = Observable.combineLatest(migraine, startTime, endTime, cause, notes)
-        save.withLatestFrom(combinedInputs)
-            .subscribe(onNext: { inputs in
-                var (migraine, startTime, endTime, cause, notes) = inputs
-                migraine.startDate = startTime
-                migraine.endDate = endTime
-                migraine.cause = cause
-                migraine.notes = notes
-                migraine.save()
-                
-            })
+        increaseRizatriptan.withLatestFrom(rizatriptan)
+            .map { $0.incrementAmount() }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(rizatriptanId)
             .disposed(by: disposeBag)
-        save.withLatestFrom(Observable.combineLatest(migraine, rizatriptanAmount))
-            .subscribe(onNext: { inputs in
-                let (migraine, rizatriptanAmount) = inputs
-                let r = migraine.treatment(medicine: .Rizatriptan)
-                r.amount = rizatriptanAmount
-                r.save()
-            })
+        increaseCaffeine.withLatestFrom(caffeine)
+            .map { $0.incrementAmount() }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(caffeineId)
             .disposed(by: disposeBag)
-        save.withLatestFrom(Observable.combineLatest(migraine, caffeineAmount))
-            .subscribe(onNext: { inputs in
-                let (migraine, caffeineAmount) = inputs
-                let c = migraine.treatment(medicine: .Caffeine)
-                c.amount = caffeineAmount
-                c.save()
-            })
+        increaseIbuprofen.withLatestFrom(ibuprofen)
+            .map { $0.incrementAmount() }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(ibuprofenId)
             .disposed(by: disposeBag)
-        save.withLatestFrom(Observable.combineLatest(migraine, ibuprofenAmount))
-            .subscribe(onNext: { inputs in
-                let (migraine, ibuprofenAmount) = inputs
-                let i = migraine.treatment(medicine: .Ibuprofen)
-                i.amount = ibuprofenAmount
-                i.save()
-            })
+        
+        increaseSeverity.withLatestFrom(migraine)
+            .map { $0.increaseSeverity() }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(migraineId)
             .disposed(by: disposeBag)
-        migraineId.accept(-1)
+        
+        let causeInfo = Observable.combineLatest(setCause, migraine)
+        saveCause.withLatestFrom(causeInfo)
+            .map { (t: (String, Migraine)) -> Int in
+                let (newCause, migraine) = t
+                return migraine.updateCause(newCause)
+            }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(migraineId)
+            .disposed(by: disposeBag)
+        
+        let notesInfo = Observable.combineLatest(setNotes, migraine)
+        saveNotes.withLatestFrom(notesInfo)
+            .map { (t: (String, Migraine)) -> Int in
+                let (newCause, migraine) = t
+                return migraine.updateCause(newCause)
+            }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(migraineId)
+            .disposed(by: disposeBag)
     }
 }

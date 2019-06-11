@@ -35,7 +35,7 @@ enum Medicine: String {
     }
 }
 
-class Treatment {
+struct Treatment {
     var id: Int = -1
     var migraineId: Int
     var medicine: Medicine
@@ -51,7 +51,7 @@ class Treatment {
         self.amount = amount
     }
     
-    convenience init(migraine: Migraine, medicine: Medicine, amount: Int) {
+    init(migraine: Migraine, medicine: Medicine, amount: Int) {
         self.init(migraineId: migraine.id, medicine: medicine, amount: amount)
     }
     
@@ -84,26 +84,26 @@ extension Treatment {
         }
     }
     
-    convenience init?(fromRow row: Row) {
+    init?(fromRow row: Row) {
         guard let medicine = Medicine(rawValue: row[Columns.medicine]) else { return nil }
         self.init(migraineId: row[Columns.migraineId], medicine: medicine, amount: row[Columns.amount])
         self.id = row[Columns.id]
     }
     
-    func save() {
-        if self.id != -1 {
-            let existing = Treatment.table.filter(Columns.id == self.id)
-            if let count = try? DB.shared.connection.run(existing.update(Columns.amount <- self.amount)) {
+    func save() -> Int {
+        if id != -1 {
+            let existing = Treatment.table.filter(Columns.id == id)
+            if let count = try? DB.shared.connection.run(existing.update(Columns.amount <- amount)) {
                 assert(count == 1, "Didn't update?!")
             }
-            return
+            return id
         }
         
-        guard let id = DB.shared.run(Treatment.table.insert(Columns.migraineId <- self.migraineId, Columns.medicine <- self.medicine.rawValue, Columns.amount <- self.amount)) else {
+        guard let id = DB.shared.run(Treatment.table.insert(Columns.migraineId <- migraineId, Columns.medicine <- medicine.rawValue, Columns.amount <- amount)) else {
             assertionFailure("Couldn't insert treatment")
-            return
+            return -1
         }
-        self.id = id
+        return id
     }
     
     static func fetch(in migraine: Migraine, forMedicine medicine: Medicine) -> Treatment? {
@@ -111,6 +111,11 @@ extension Treatment {
             return Treatment(fromRow: row)
         }
         return nil
+    }
+    
+    static func fetch(id: Int) -> Treatment? {
+        guard let row = try? DB.shared.connection.pluck(self.table.filter(Columns.id == id)) else { return nil }
+        return Treatment(fromRow: row)
     }
     
     static func historicalMedicineCount(medicine: Medicine, since: Date) -> Int {
@@ -133,4 +138,18 @@ extension Treatment {
     }
     static var quarterRztCount: Int { return self.quarterMedicineCount(medicine: .Rizatriptan) }
     static var quarterIbuprofenCount: Int { return self.quarterMedicineCount(medicine: .Ibuprofen) }
+    
+    func incrementedAmount() -> Int {
+        return (amount + 1) % (medicine.limit + 1)
+    }
+    
+    func incrementAmount() -> Int {
+        precondition(id != -1)
+        let existing = Treatment.table.filter(Columns.id == id)
+        guard let count = try? DB.shared.connection.run(existing.update(Columns.amount <- incrementedAmount())), count == 1 else {
+            assertionFailure("Didn't update?!")
+            return -1
+        }
+        return id
+    }
 }

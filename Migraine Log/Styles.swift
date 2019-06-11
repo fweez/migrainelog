@@ -94,12 +94,6 @@ func baseButtonStyle(_ button: UIButton?) {
     button?.layer.cornerRadius = roundedCornerRadius
 }
 
-func saveButtonStyle(_ button: UIButton?) {
-    baseButtonStyle(button)
-    button?.titleLabel?.font = bodyFont(for: .body)
-    button?.tintColor = UIColor.blue
-}
-
 func cellStyle(_ cell: UITableViewCell) {
     baseBackgroundStyle(cell.contentView)
     baseLabelStyle(cell.textLabel)
@@ -132,5 +126,12 @@ func textAreaStyle(_ view: UIView) {
     if let tf = view as? UITextField {
         tf.font = textAreaFont
         tf.textColor = UIColor.white
+    }
+}
+
+func printAllFonts() {
+    for family in UIFont.familyNames.sorted() {
+        let names = UIFont.fontNames(forFamilyName: family)
+        print("Family: \(family) Font names: \(names)")
     }
 }

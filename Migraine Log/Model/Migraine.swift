@@ -15,13 +15,10 @@ struct Migraine {
     var endDate: Date?
     var cause: String
     var notes: String
-    var severity: Int {
-        didSet {
-            if self.severity > 5 {
-                self.severity = 1
-            }
-        }
-    }
+    var severity: Int
+    
+    var incrementedSeverity: Int { return (severity + 1) % 5 }
+    
     var length: TimeInterval {
         guard let endDate = self.endDate else { return 0 }
         return endDate.timeIntervalSince(self.startDate)
@@ -115,24 +112,26 @@ extension Migraine {
             return t
         }
         let t = Treatment(migraine: self, medicine: medicine, amount: 0)
-        t.save()
+        _ = t.save()
         return t
     }
     
-    mutating func save() {
-        if self.id != -1 {
-            let existing = Migraine.table.filter(Columns.id == self.id)
-            let updateQuery = existing.update(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
-            if let count = try? DB.shared.connection.run(updateQuery), count == 1 { return }
+    func save() -> Int {
+        if id != -1 {
+            let existing = Migraine.table.filter(Columns.id == id)
+            let updateQuery = existing.update(Columns.date <- startDate, Columns.endDate <- endDate, Columns.cause <- cause, Columns.notes <- notes, Columns.severity <- severity)
+            if let count = try? DB.shared.connection.run(updateQuery), count == 1 {
+                return id
+            }
         }
         
-        assert(self.id == -1)
-        let insert = Migraine.table.insert(Columns.date <- self.startDate, Columns.endDate <- self.endDate, Columns.cause <- self.cause, Columns.notes <- self.notes, Columns.severity <- self.severity)
+        assert(id == -1)
+        let insert = Migraine.table.insert(Columns.date <- startDate, Columns.endDate <- endDate, Columns.cause <- cause, Columns.notes <- notes, Columns.severity <- severity)
         guard let id = DB.shared.run(insert) else {
             assertionFailure("Didn't insert a migraine!")
-            return
+            return -1
         }
-        self.id = id
+        return id
     }
     
     static func allIds() -> [Int] {
@@ -183,6 +182,33 @@ extension Migraine {
     
     static var monthMigraineCount: Int { return self.historicalMigraineCount(since: Date(timeIntervalSinceNow: Migraine.oneMonth)) }
     static var quarterMigraineCount: Int { return self.historicalMigraineCount(since: Date(timeIntervalSinceNow: Migraine.quarter)) }
+}
+
+// Support for the MigraineDetailsViewModel
+extension Migraine {
+    func updateCause(_ cause: String) -> Int {
+        assert(id != -1)
+        let existing = Migraine.table.filter(Columns.id == id)
+        let updateQuery = existing.update(Columns.cause <- cause)
+        guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
+        return id
+    }
+    
+    func updateNotes(_ notes: String) -> Int {
+        assert(id != -1)
+        let existing = Migraine.table.filter(Columns.id == id)
+        let updateQuery = existing.update(Columns.notes <- notes)
+        guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
+        return id
+    }
+    
+    func increaseSeverity() -> Int {
+        assert(id != -1)
+        let existing = Migraine.table.filter(Columns.id == id)
+        let updateQuery = existing.update(Columns.severity <- incrementedSeverity)
+        guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
+        return id
+    }
 }
 
 extension Migraine {

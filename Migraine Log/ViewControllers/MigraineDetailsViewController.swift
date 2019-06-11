@@ -30,7 +30,6 @@ class DetailsViewController: UIViewController {
     var causeView = UITextField()
     var notesTitle = UILabel()
     var notesView = UITextView()
-    var saveButton: UIButton = UIButton()
     
     private let disposeBag = DisposeBag()
     
@@ -86,14 +85,13 @@ class DetailsViewController: UIViewController {
         prepareForAutolayout(notesView)
         stackView.addArrangedSubview(notesView)
         
-        addButtonWithTextToVStack(saveButton, "Save")
-        
         scrollView.addSubview(stackView)
         
         bindData()
     }
     
     func bindData() {
+        // INPUTS
         viewModel.title
             .drive(self.migraineTitle.rx.text)
             .disposed(by: disposeBag)
@@ -115,12 +113,38 @@ class DetailsViewController: UIViewController {
             .drive(severityButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
         viewModel.cause
-            .bind(to: causeView.rx.text)
+            .drive(causeView.rx.text)
             .disposed(by: disposeBag)
         viewModel.notes
-            .bind(to: notesView.rx.text)
+            .drive(notesView.rx.text)
             .disposed(by: disposeBag)
         
+        // OUTPUTS
+        rztButton.rx.tap
+            .asDriver(onErrorJustReturn: ())
+            .drive(viewModel.increaseRizatriptan)
+            .disposed(by: disposeBag)
+        cafButton.rx.tap
+            .asDriver(onErrorJustReturn: ())
+            .drive(viewModel.increaseCaffeine)
+            .disposed(by: disposeBag)
+        ibuButton.rx.tap
+            .asDriver(onErrorJustReturn: ())
+            .drive(viewModel.increaseIbuprofen)
+            .disposed(by: disposeBag)
+        severityButton.rx.tap
+            .asDriver()
+            .drive(viewModel.increaseSeverity)
+            .disposed(by: disposeBag)
+        causeView.rx.text.changed
+            .asDriver(onErrorJustReturn: "")
+            .map { $0 ?? "" }
+            .drive(viewModel.setCause)
+            .disposed(by: disposeBag)
+        causeView.rx.controlEvent(.editingDidEnd)
+            .asDriver()
+            .drive(viewModel.saveCause)
+            .disposed(by: disposeBag)
     }
     
     override func viewDidLoad() {
@@ -152,7 +176,6 @@ class DetailsViewController: UIViewController {
         [migraineTitle, medicinesTitle, severityTitle, causeTitle, notesTitle].forEach(largeLabelStyle)
         [startedButton, endedButton, rztButton, cafButton, ibuButton, severityButton].forEach(baseButtonStyle)
         [causeView, notesView].forEach(textAreaStyle)
-        saveButtonStyle(saveButton)
     }
     
     override func viewDidAppear(_ animated: Bool) {
