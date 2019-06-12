@@ -46,6 +46,10 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
                 self?.migraineList.deselectRow(at: indexPath, animated: true)
             })
             .disposed(by: disposeBag)
+        migraineList.rx.modelDeleted(Int.self)
+            .asDriver(onErrorJustReturn: -1)
+            .drive(viewModel.deleteMigraine)
+            .disposed(by: disposeBag)
         addButton.rx.tap
             .bind(to: viewModel.makeNew)
             .disposed(by: disposeBag)
@@ -55,7 +59,6 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
             vc.navigationItem.largeTitleDisplayMode = .never
             self.navigationController?.pushViewController(vc, animated: true)
         }
-        
         let selectedCell = migraineList.rx.modelSelected(Int.self)
             .share()
         let createdNew = addButton.rx.tap.withLatestFrom(viewModel.newMigraine)

@@ -192,6 +192,15 @@ extension Migraine {
         Medicine.allCases.forEach { _ = Treatment(migraineId: id, medicine: $0, amount: 0).save() }
         return id
     }
+    
+    static func deleteId(_ id: Int)  {
+        let query = Migraine.table.filter(Columns.id == id).delete()
+        do {
+            try DB.shared.connection.run(query)
+        } catch {
+            print("Couldn't delete migraine id \(id)")
+        }
+    }
 }
 
 // Support for the MigraineDetailsViewModel

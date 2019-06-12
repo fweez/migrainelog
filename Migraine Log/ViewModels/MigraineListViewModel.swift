@@ -13,6 +13,7 @@ struct MigraineListViewModel {
     var ids: BehaviorSubject<[Int]>
     var makeNew = PublishSubject<Void>()
     var newMigraine: Observable<Int>
+    var deleteMigraine = PublishSubject<Int>()
     
     private let disposeBag = DisposeBag()
 
@@ -27,6 +28,15 @@ struct MigraineListViewModel {
         
         makeNew
             .map(Migraine.allIds)
+            .asDriver(onErrorJustReturn: [])
+            .drive(ids)
+            .disposed(by: disposeBag)
+        
+        deleteMigraine
+            .map { id in
+                Migraine.deleteId(id)
+                return Migraine.allIds()
+            }
             .asDriver(onErrorJustReturn: [])
             .drive(ids)
             .disposed(by: disposeBag)
