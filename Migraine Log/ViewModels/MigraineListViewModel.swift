@@ -10,5 +10,25 @@ import Foundation
 import RxSwift
 
 struct MigraineListViewModel {
-    var ids: Observable<[Int]> = Observable.of(Migraine.allIds())
+    var ids: BehaviorSubject<[Int]>
+    var makeNew = PublishSubject<Void>()
+    var newMigraine: Observable<Int>
+    
+    private let disposeBag = DisposeBag()
+
+    init() {
+        ids = BehaviorSubject(value: Migraine.allIds())
+        
+        newMigraine = makeNew
+            .map {
+                Migraine.new()
+            }
+            .debug()
+        
+        makeNew
+            .map(Migraine.allIds)
+            .asDriver(onErrorJustReturn: [])
+            .drive(ids)
+            .disposed(by: disposeBag)
+    }
 }

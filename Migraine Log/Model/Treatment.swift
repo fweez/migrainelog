@@ -9,7 +9,7 @@
 import Foundation
 import SQLite
 
-enum Medicine: String {
+enum Medicine: String, CaseIterable {
     case Rizatriptan
     case Caffeine
     case Ibuprofen

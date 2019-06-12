@@ -24,8 +24,7 @@ struct Migraine {
         return endDate.timeIntervalSince(self.startDate)
     }
     
-    static var newMigraineDate = Date(timeIntervalSince1970: 0)
-    init(startDate: Date = Migraine.newMigraineDate, endDate: Date? = nil, cause: String = "", notes: String = "", severity: Int = 1) {
+    init(startDate: Date = Date(), endDate: Date? = nil, cause: String = "", notes: String = "", severity: Int = 1) {
         self.startDate = startDate
         self.endDate = endDate
         self.cause = cause
@@ -111,8 +110,9 @@ extension Migraine {
         if self.id != -1, let t = Treatment.fetch(in: self, forMedicine: medicine) {
             return t
         }
-        let t = Treatment(migraine: self, medicine: medicine, amount: 0)
-        _ = t.save()
+        var t = Treatment(migraine: self, medicine: medicine, amount: 0)
+        let id = t.save()
+        t.id = id
         return t
     }
     
@@ -182,6 +182,16 @@ extension Migraine {
     
     static var monthMigraineCount: Int { return self.historicalMigraineCount(since: Date(timeIntervalSinceNow: Migraine.oneMonth)) }
     static var quarterMigraineCount: Int { return self.historicalMigraineCount(since: Date(timeIntervalSinceNow: Migraine.quarter)) }
+}
+
+// Suport for MigraineListViewModel
+extension Migraine {
+    static func new() -> Int {
+        let m = Migraine()
+        let id = m.save()
+        Medicine.allCases.forEach { _ = Treatment(migraineId: id, medicine: $0, amount: 0).save() }
+        return id
+    }
 }
 
 // Support for the MigraineDetailsViewModel

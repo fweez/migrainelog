@@ -92,8 +92,6 @@ struct MigraineDetailsViewModel {
             .asDriver(onErrorJustReturn: "Error")
         rawStart = migraine
             .map { $0.startDate }
-            .debug("Raw start", trimOutput: false)
-        
         formattedStart = migraine
             .map { "Started: \($0.formattedStartDate)" }
             .asDriver(onErrorJustReturn: "Error")
@@ -124,7 +122,6 @@ struct MigraineDetailsViewModel {
         
         let startInfo = Observable.combineLatest(setStarted, migraine)
         saveStarted.withLatestFrom(startInfo)
-            .debug("Combiner, before filter", trimOutput: false)
             .filter { t in
                 let (newDate, migraine) = t
                 return newDate != migraine.startDate
@@ -134,7 +131,6 @@ struct MigraineDetailsViewModel {
                 return migraine.updateStart(newDate)
             }
             .asDriver(onErrorJustReturn: -1)
-            .debug("Combiner, driver mode, set start", trimOutput: false)
             .drive(migraineId)
             .disposed(by: disposeBag)
         

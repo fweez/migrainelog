@@ -41,32 +41,33 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
                 return MigraineCell(migraineId: migraineId)
             }
             .disposed(by: disposeBag)
-        let selection = migraineList.rx.modelSelected(Int.self)
-            .share()
-        selection
-            .subscribe(onNext: { [weak self] migraineId in
-                guard let vc = self?.detailVC else { return }
-                vc.navigationItem.largeTitleDisplayMode = .never
-                self?.navigationController?.pushViewController(vc, animated: true)
-            })
-            .disposed(by: disposeBag)
-        selection
-            .asDriver(onErrorJustReturn: -1)
-            .drive(self.detailVC.viewModel.migraineId)
-            .disposed(by: disposeBag)
         migraineList.rx.itemSelected
             .subscribe(onNext: { [weak self] indexPath in
                 self?.migraineList.deselectRow(at: indexPath, animated: true)
             })
             .disposed(by: disposeBag)
-        
-        
         addButton.rx.tap
-            .subscribe { [weak self] _ in
-                guard let vc = self?.detailVC else { return }
-                vc.viewModel.migraineId.accept(-1)
-                self?.navigationController?.pushViewController(vc, animated: true)
-            }
+            .bind(to: viewModel.makeNew)
             .disposed(by: disposeBag)
+        
+        func pushNavToMigraineId(_ migraineId: Int) -> Void {
+            let vc = self.detailVC
+            vc.navigationItem.largeTitleDisplayMode = .never
+            self.navigationController?.pushViewController(vc, animated: true)
+        }
+        
+        let selectedCell = migraineList.rx.modelSelected(Int.self)
+            .share()
+        let createdNew = addButton.rx.tap.withLatestFrom(viewModel.newMigraine)
+        
+        [selectedCell, createdNew].forEach { observable in
+            observable
+                .asDriver(onErrorJustReturn: -1)
+                .drive(self.detailVC.viewModel.migraineId)
+                .disposed(by: disposeBag)
+            observable
+                .subscribe(onNext: pushNavToMigraineId)
+                .disposed(by: disposeBag)
+        }
     }
 }
