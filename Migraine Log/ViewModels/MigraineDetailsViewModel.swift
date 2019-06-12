@@ -13,6 +13,10 @@ import RxCocoa
 struct MigraineDetailsViewModel {
     // inputs
     var migraineId = BehaviorRelay<Int>(value: -1)
+    var setStarted = PublishSubject<Date>()
+    var saveStarted = PublishSubject<Void>()
+    var setEnded = PublishSubject<Date>()
+    var saveEnded = PublishSubject<Void>()
     var increaseRizatriptan = PublishSubject<Void>()
     var increaseCaffeine = PublishSubject<Void>()
     var increaseIbuprofen = PublishSubject<Void>()
@@ -24,12 +28,14 @@ struct MigraineDetailsViewModel {
     
     // outputs
     var title: Driver<String>
+    var rawStart: Observable<Date>
     var formattedStart: Driver<String>
+    var rawEnd: Driver<Date?>
+    var formattedEnd: Driver<String>
     var formattedRizatriptanAmount: Driver<String>
     var formattedCaffeineAmount: Driver<String>
     var formattedIbuprofenAmount: Driver<String>
     var formattedSeverity: Driver<String>
-    var formattedEnd: Driver<String>
     var cause: Driver<String>
     var notes: Driver<String>
     
@@ -67,26 +73,33 @@ struct MigraineDetailsViewModel {
             .drive(ibuprofenId)
             .disposed(by: disposeBag)
         
-        let treatmentFetcher = { (id: Int) -> Observable<Treatment> in
+        let fetchTreatment = { (id: Int) -> Observable<Treatment> in
             let t = Treatment.fetch(id: id) ?? Treatment(migraineId: -1, medicine: .Rizatriptan, amount: 0)
             return Observable.of(t)
         }
         
         rizatriptan = rizatriptanId
-            .flatMap(treatmentFetcher)
+            .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         caffeine = caffeineId
-            .flatMap(treatmentFetcher)
+            .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         ibuprofen = ibuprofenId
-            .flatMap(treatmentFetcher)
+            .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         title = migraine
             .map { "Migraine on \($0.formattedStartDate)" }
             .asDriver(onErrorJustReturn: "Error")
+        rawStart = migraine
+            .map { $0.startDate }
+            .debug("Raw start", trimOutput: false)
+        
         formattedStart = migraine
             .map { "Started: \($0.formattedStartDate)" }
             .asDriver(onErrorJustReturn: "Error")
+        rawEnd = migraine
+            .map { $0.endDate }
+            .asDriver(onErrorJustReturn: Date.distantFuture)
         formattedEnd = migraine
             .map { "Ended: \($0.formattedEndDate)" }
             .asDriver(onErrorJustReturn: "Error")
@@ -108,6 +121,36 @@ struct MigraineDetailsViewModel {
         notes = migraine
             .map { $0.notes }
             .asDriver(onErrorJustReturn: "")
+        
+        let startInfo = Observable.combineLatest(setStarted, migraine)
+        saveStarted.withLatestFrom(startInfo)
+            .debug("Combiner, before filter", trimOutput: false)
+            .filter { t in
+                let (newDate, migraine) = t
+                return newDate != migraine.startDate
+            }
+            .map { (t: (Date, Migraine)) -> Int in
+                let (newDate, migraine) = t
+                return migraine.updateStart(newDate)
+            }
+            .asDriver(onErrorJustReturn: -1)
+            .debug("Combiner, driver mode, set start", trimOutput: false)
+            .drive(migraineId)
+            .disposed(by: disposeBag)
+        
+        let endInfo = Observable.combineLatest(setEnded, migraine)
+        saveEnded.withLatestFrom(endInfo)
+            .filter { t in
+                let (newDate, migraine) = t
+                return newDate != migraine.startDate
+            }
+            .map { (t: (Date, Migraine)) -> Int in
+                let (newDate, migraine) = t
+                return migraine.updateEnd(newDate)
+            }
+            .asDriver(onErrorJustReturn: -1)
+            .drive(migraineId)
+            .disposed(by: disposeBag)
         
         increaseRizatriptan.withLatestFrom(rizatriptan)
             .map { $0.incrementAmount() }

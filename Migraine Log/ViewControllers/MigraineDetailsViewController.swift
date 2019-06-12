@@ -18,8 +18,13 @@ class DetailsViewController: UIViewController {
     
     var migraineTitle = UILabel()
     var startedButton = UIButton()
+    var startedPickerTitle = UILabel()
+    var startedPicker = UIDatePicker()
+    var startedPickerSave = UIButton()
     var endedButton = UIButton()
-    
+    var endedPickerTitle = UILabel()
+    var endedPicker = UIDatePicker()
+    var endedPickerSave = UIButton()
     var medicinesTitle = UILabel()
     var rztButton = UIButton()
     var cafButton = UIButton()
@@ -41,6 +46,7 @@ class DetailsViewController: UIViewController {
         view = UIView()
         
         scrollView = UIScrollView()
+        scrollView.alwaysBounceVertical = true
         scrollView.keyboardDismissMode = .interactive
         
         prepareForAutolayout(scrollView)
@@ -65,8 +71,23 @@ class DetailsViewController: UIViewController {
         
         addLabelWithTextToVStack(migraineTitle, "Add/Edit Migraine (PH)")
         addButtonWithTextToVStack(startedButton, "Started <placeholder date>")
+        addLabelWithTextToVStack(startedPickerTitle, "Set start time:")
+        startedPicker.datePickerMode = .dateAndTime
+        startedPicker.setDate(Date.distantPast, animated: false)
+        addViewToVStack(startedPicker)
+        addButtonWithTextToVStack(startedPickerSave, "Save")
+        startedPicker.isHidden = true // show these when we hit the buttons
+        startedPickerTitle.isHidden = true
+        startedPickerSave.isHidden = true
         addButtonWithTextToVStack(endedButton, "Ended <placeholder date>")
-        
+        addLabelWithTextToVStack(endedPickerTitle, "Set end time:")
+        endedPicker.datePickerMode = .dateAndTime
+        endedPicker.setDate(Date.distantFuture, animated: false)
+        addViewToVStack(endedPicker)
+        addButtonWithTextToVStack(endedPickerSave, "Save")
+        endedPicker.isHidden = true
+        endedPickerTitle.isHidden = true
+        endedPickerSave.isHidden = true
         addLabelWithTextToVStack(medicinesTitle, "Medicines")
         [(rztButton, "Rizatriptan: 99 mg"),
          (cafButton, "Caffeine: 420 mg"),
@@ -110,6 +131,14 @@ class DetailsViewController: UIViewController {
                     .drive(button.rx.title(for: .normal))
                     .disposed(by: disposeBag)
             })
+        viewModel.rawStart
+            .asDriver(onErrorJustReturn: Date.distantFuture)
+            .drive(startedPicker.rx.date)
+            .disposed(by: disposeBag)
+        viewModel.rawEnd
+            .map { $0 ?? Date() }
+            .drive(endedPicker.rx.date)
+            .disposed(by: disposeBag)
         viewModel.formattedSeverity
             .drive(severityButton.rx.title(for: .normal))
             .disposed(by: disposeBag)
@@ -121,6 +150,22 @@ class DetailsViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // OUTPUTS
+        startedPicker.rx.value
+            .asDriver()
+            .drive(viewModel.setStarted)
+            .disposed(by: disposeBag)
+        startedPickerSave.rx.tap
+            .asDriver()
+            .drive(viewModel.saveStarted)
+            .disposed(by: disposeBag)
+        endedPicker.rx.value
+            .asDriver()
+            .drive(viewModel.setEnded)
+            .disposed(by: disposeBag)
+        endedPickerSave.rx.tap
+            .asDriver()
+            .drive(viewModel.saveEnded)
+            .disposed(by: disposeBag)
         rztButton.rx.tap
             .asDriver(onErrorJustReturn: ())
             .drive(viewModel.increaseRizatriptan)
@@ -163,8 +208,29 @@ class DetailsViewController: UIViewController {
             .disposed(by: disposeBag)
         
         // UI INTERACTIONS
+        let pickerAnimationDuration: TimeInterval = 0.35
+        func toggleViews(_ views: [UIView]) -> () -> Void {
+            return { views.forEach { $0.isHidden.toggle() } }
+        }
         
-        
+        let animateStartSelectionToggle = {
+            UIView.animate(withDuration: pickerAnimationDuration, delay: 0, options: .curveEaseOut, animations: toggleViews([self.startedButton, self.startedPickerTitle, self.startedPicker, self.startedPickerSave]), completion: nil)
+        }
+        startedButton.rx.tap
+            .subscribe(onNext: animateStartSelectionToggle)
+            .disposed(by: disposeBag)
+        startedPickerSave.rx.tap
+            .subscribe(onNext: animateStartSelectionToggle)
+            .disposed(by: disposeBag)
+        let animateEndSelectionToggle = {
+            UIView.animate(withDuration: pickerAnimationDuration, delay: 0, options: .curveEaseOut, animations: toggleViews([self.endedButton, self.endedPickerTitle, self.endedPicker, self.endedPickerSave]), completion: nil)
+        }
+        endedButton.rx.tap
+            .subscribe(onNext: animateEndSelectionToggle)
+            .disposed(by: disposeBag)
+        endedPickerSave.rx.tap
+            .subscribe(onNext: animateEndSelectionToggle)
+            .disposed(by: disposeBag)
     }
     
     override func viewDidLoad() {
@@ -193,9 +259,38 @@ class DetailsViewController: UIViewController {
         stackViewStyle(stackView)
         baseBackgroundStyle(view)
         baseNavbarStyle(navigationController?.navigationBar)
+        [startedPickerTitle, endedPickerTitle].forEach(bodyLabelStyle)
         [migraineTitle, medicinesTitle, severityTitle, causeTitle, notesTitle].forEach(largeLabelStyle)
-        [startedButton, endedButton, rztButton, cafButton, ibuButton, severityButton].forEach(baseButtonStyle)
+        [startedButton, startedPickerSave, endedButton, endedPickerSave, rztButton, cafButton, ibuButton, severityButton].forEach(baseButtonStyle)
         [causeView, notesView].forEach(textAreaStyle)
+        [startedPicker, endedPicker].forEach(datePickerStyle)
+    }
+    
+    override func viewDidAppear(_ animated: Bool) {
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillShow(notification:)), name: UIWindow.keyboardWillShowNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillHide(ignored:)), name: UIWindow.keyboardWillHideNotification, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(keyboardWillChangeSize(notification:)), name: UIWindow.keyboardWillChangeFrameNotification, object: nil)
+    }
+    
+    // MARK: Keyboard show/hide stuff
+    @objc func keyboardWillShow(notification: NSNotification) {
+        self.updateScrollRect(fromNotification: notification)
+    }
+    
+    @objc func keyboardWillChangeSize(notification: NSNotification) {
+        self.updateScrollRect(fromNotification: notification)
+    }
+    
+    @objc func keyboardWillHide(ignored: NSNotification) {
+        self.scrollView.contentInset = UIEdgeInsets.zero
+    }
+    
+    func updateScrollRect(fromNotification notification: NSNotification) {
+        if let userinfo = notification.userInfo, let value = userinfo[UIResponder.keyboardFrameEndUserInfoKey] {
+            let kbSize = (value as! NSValue).cgRectValue.size
+            self.scrollView.contentInset = UIEdgeInsets(top: 0, left: 0, bottom: kbSize.height, right: 0)
+            self.scrollView.scrollRectToVisible(self.notesView.frame, animated: true)
+        }
     }
 }
 

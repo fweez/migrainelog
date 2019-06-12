@@ -186,28 +186,32 @@ extension Migraine {
 
 // Support for the MigraineDetailsViewModel
 extension Migraine {
-    func updateCause(_ cause: String) -> Int {
+    func update(createUpdateQuery: (Table) -> Update) -> Int {
         assert(id != -1)
         let existing = Migraine.table.filter(Columns.id == id)
-        let updateQuery = existing.update(Columns.cause <- cause)
+        let updateQuery = createUpdateQuery(existing)
         guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
         return id
+    }
+    
+    func updateCause(_ cause: String) -> Int {
+        return update { existing in existing.update(Columns.cause <- cause) }
     }
     
     func updateNotes(_ notes: String) -> Int {
-        assert(id != -1)
-        let existing = Migraine.table.filter(Columns.id == id)
-        let updateQuery = existing.update(Columns.notes <- notes)
-        guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
-        return id
+        return update { existing in existing.update(Columns.notes <- notes) }
     }
     
     func increaseSeverity() -> Int {
-        assert(id != -1)
-        let existing = Migraine.table.filter(Columns.id == id)
-        let updateQuery = existing.update(Columns.severity <- incrementedSeverity)
-        guard let count = try? DB.shared.connection.run(updateQuery), count == 1 else { return -1 }
-        return id
+        return update { existing in existing.update(Columns.severity <- incrementedSeverity) }
+    }
+    
+    func updateStart(_ newStart: Date) -> Int {
+        return update { existing in existing.update(Columns.date <- newStart) }
+    }
+    
+    func updateEnd(_ newEnd: Date?) -> Int {
+        return update { existing in existing.update(Columns.endDate <- newEnd) }
     }
 }
 

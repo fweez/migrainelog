@@ -13,9 +13,10 @@ let roundedCornerRadius: CGFloat = 4
 let commonInsets: UIEdgeInsets = UIEdgeInsets(top: 4, left: 8, bottom: 4, right: 8)
 let veryDarkGray = UIColor.init(white: 0.1, alpha: 1)
 let extremelyDarkGray = UIColor.init(white: 0.05, alpha: 1)
+let background = UIColor.black
 
 func prepareForAutolayout(_ view: UIView) { view.translatesAutoresizingMaskIntoConstraints = false }
-func baseBackgroundStyle(_ view: UIView) { view.backgroundColor = UIColor.black }
+func baseBackgroundStyle(_ view: UIView?) { view?.backgroundColor = background }
 
 func font(named fontName: String, for textStyle: UIFont.TextStyle, baseSize: CGFloat = UIFont.labelFontSize) -> UIFont {
     guard let customFont = UIFont(name: fontName, size: baseSize) else {
@@ -39,7 +40,7 @@ func barButtonFont(for textStyle: UIFont.TextStyle) -> UIFont {
 }
 
 func baseNavbarStyle(_ navbar: UINavigationBar?) {
-    navbar?.barTintColor = UIColor.black
+    navbar?.barTintColor = background
     navbar?.tintColor = UIColor.lightGray
     
     let largeTitleAttribs = [
@@ -66,7 +67,7 @@ func shortNavbarStyle(_ navbar: UINavigationBar?) {
 }
 
 func baseTabbarstyle(_ tabbar: UITabBar?) {
-    tabbar?.barTintColor = UIColor.black
+    tabbar?.barTintColor = background
     tabbar?.tintColor = UIColor.lightGray
 }
 
@@ -103,6 +104,11 @@ func cellStyle(_ cell: UITableViewCell) {
     cell.selectedBackgroundView = backgroundView
 }
 
+func bodyLabelStyle(_ label: UILabel?) {
+    baseLabelStyle(label)
+    baseBackgroundStyle(label)
+}
+
 func largeLabelStyle(_ label: UILabel?) {
     baseLabelStyle(label)
     label?.font = titleFont(for: .title1)
@@ -134,4 +140,8 @@ func printAllFonts() {
         let names = UIFont.fontNames(forFamilyName: family)
         print("Family: \(family) Font names: \(names)")
     }
+}
+
+func datePickerStyle(_ picker: UIDatePicker) {
+    picker.backgroundColor = UIColor.white
 }

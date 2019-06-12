@@ -15,7 +15,7 @@ class DB {
         var c: Connection
         do {
             c = try Connection("\(path)/migraines.sqlite3")
-            c.trace { print($0) }
+            //c.trace { print($0) }
         } catch {
             assertionFailure("Could not open migraines.sqlite3")
             c = (try? Connection())!
