@@ -22,10 +22,18 @@ struct MigraineCellViewModel {
         migraine = BehaviorSubject(value: Migraine.fetch(migraineId: id)!)
         
         title = migraine
-            .map { $0.formattedStartDate }
+            .map { CommonDateFormatter.string(from: $0.startDate) }
             .asDriver(onErrorJustReturn: "Error")
         description = migraine
-            .map { "\($0.formattedLength)  \($0.formattedSeverity)" }
+            .map { m in
+                let dcfmt = DateComponentsFormatter()
+                dcfmt.allowsFractionalUnits = false
+                dcfmt.unitsStyle = .short
+                dcfmt.includesApproximationPhrase = false
+                dcfmt.allowedUnits = [.day, .hour, .minute]
+                let lenString = dcfmt.string(from: m.length) ?? "Error"
+                let sevString = severityString(m.severity)
+                return "\(lenString)  \(sevString)" }
             .asDriver(onErrorJustReturn: "")
     }
 }

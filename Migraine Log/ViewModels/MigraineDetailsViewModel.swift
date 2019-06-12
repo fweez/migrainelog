@@ -10,6 +10,20 @@ import Foundation
 import RxSwift
 import RxCocoa
 
+// MARK: Formatted strings
+let CommonDateFormatter: DateFormatter = {
+    let fmt = DateFormatter()
+    fmt.doesRelativeDateFormatting = true
+    fmt.dateStyle = .medium
+    fmt.timeStyle = .short
+    return fmt
+}()
+
+func severityString(_ severity: Int) -> String {
+    let symbols = Array<String>(repeating: "⚡️", count: severity)
+    return symbols.joined(separator: " ")
+}
+
 struct MigraineDetailsViewModel {
     // inputs
     var migraineId = BehaviorRelay<Int>(value: -1)
@@ -87,19 +101,23 @@ struct MigraineDetailsViewModel {
         ibuprofen = ibuprofenId
             .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
-        title = migraine
-            .map { "Migraine on \($0.formattedStartDate)" }
-            .asDriver(onErrorJustReturn: "Error")
+        
         rawStart = migraine
             .map { $0.startDate }
-        formattedStart = migraine
-            .map { "Started: \($0.formattedStartDate)" }
+        title = rawStart
+            .map { "Migraine on \(CommonDateFormatter.string(from: $0))" }
+            .asDriver(onErrorJustReturn: "Error")
+        formattedStart = rawStart
+            .map { "Started: \(CommonDateFormatter.string(from: $0))" }
             .asDriver(onErrorJustReturn: "Error")
         rawEnd = migraine
             .map { $0.endDate }
             .asDriver(onErrorJustReturn: Date.distantFuture)
-        formattedEnd = migraine
-            .map { "Ended: \($0.formattedEndDate)" }
+        formattedEnd = rawEnd
+            .map { date in
+                guard let date = date else { return "Set end time" }
+                return "Ended: \(CommonDateFormatter.string(from: date))"
+            }
             .asDriver(onErrorJustReturn: "Error")
         formattedRizatriptanAmount = rizatriptan
             .map { "Rizatriptan: \($0.amountDescription)" }
@@ -111,7 +129,7 @@ struct MigraineDetailsViewModel {
             .map { "Ibuprofen: \($0.amountDescription)" }
             .asDriver(onErrorJustReturn: "Error")
         formattedSeverity = migraine
-            .map { $0.formattedSeverity }
+            .map { severityString($0.severity) }
             .asDriver(onErrorJustReturn: "Error")
         cause = migraine
             .map { $0.cause }

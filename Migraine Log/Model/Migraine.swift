@@ -31,43 +31,6 @@ struct Migraine {
         self.notes = notes
         self.severity = severity
     }
-
-    // MARK: Formatted strings
-    private var dateFormatter: DateFormatter = {
-        let fmt = DateFormatter()
-        fmt.doesRelativeDateFormatting = true
-        fmt.dateStyle = .medium
-        fmt.timeStyle = .short
-        return fmt
-    }()
-    var formattedStartDate: String {
-        return self.dateFormatter.string(from: self.startDate)
-    }
-    var formattedEndDate: String {
-        if let endDate = self.endDate {
-            return self.dateFormatter.string(from: endDate)
-        } else {
-            return ""
-        }
-    }
-    
-    private var lengthFormatter: DateComponentsFormatter = {
-        let dcfmt = DateComponentsFormatter()
-        dcfmt.allowsFractionalUnits = false
-        dcfmt.unitsStyle = .short
-        dcfmt.includesApproximationPhrase = false
-        dcfmt.allowedUnits = [.day, .hour, .minute]
-        return dcfmt
-    }()
-    var formattedLength: String {
-        return self.lengthFormatter.string(from: self.length) ?? ""
-    }
-    
-    var formattedSeverity: String {
-        let symbols = Array<String>(repeating: "⚡️", count: self.severity)
-        return symbols.joined(separator: " ")
-        
-    }
 }
 
 // MARK: SQlite stuff
@@ -100,10 +63,6 @@ extension Migraine {
     init(fromRow row: Row) {
         self.init(startDate: row[Columns.date], endDate: row[Columns.endDate], cause: row[Columns.cause], notes: row[Columns.notes], severity: row[Columns.severity])
         self.id = row[Columns.id]
-    }
-    
-    static func count() -> Int {
-        return (try? DB.shared.connection.scalar(self.table.count)) ?? 0
     }
     
     func treatment(medicine: Medicine) -> Treatment {
@@ -142,31 +101,11 @@ extension Migraine {
         return []
     }
     
-    static func newestIds(location: Int, length: Int) -> [Int] {
-        let query = self.table
-            .select(Columns.id, Columns.date)
-            .order(Columns.date.desc)
-            .limit(length, offset: location)
-        if let rows = try? DB.shared.connection.prepare(query) {
-            return rows.map { $0[Columns.id] }
-        }
-        return []
-    }
-    
     static func fetch(migraineId: Int) -> Migraine? {
         if let row = try? DB.shared.connection.pluck(self.table.filter(Columns.id == migraineId)) {
             return Migraine(fromRow: row)
         }
         return nil
-    }
-    
-    func delete() {
-        let query = Migraine.table.filter(Columns.id == self.id).delete()
-        do {
-            try DB.shared.connection.run(query)
-        } catch {
-            print("Couldn't delete migraine id \(self.id)")
-        }
     }
     
     static let oneMonth = TimeInterval(-60 * 60 * 24 * 30)
@@ -261,7 +200,7 @@ extension Migraine {
                 let ibu = m.treatment(medicine: .Ibuprofen)
                 let caf = m.treatment(medicine: .Caffeine)
                 
-                output += "\(dateFormatter.string(from: m.startDate)) - \(m.formattedLength) migraine, severity \(m.severity)\n"
+                //output += "\(dateFormatter.string(from: m.startDate)) - \(m.formattedLength) migraine, severity \(m.severity)\n"
                 if rzt.amount > 0 {
                     output += "\(rzt.amountDescription) rizatriptan\n"
                 }
