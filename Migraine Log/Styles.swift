@@ -50,7 +50,7 @@ func baseNavbarStyle(_ navbar: UINavigationBar?) {
     navbar?.largeTitleTextAttributes = largeTitleAttribs
     
     let smallTitleAttribs = [
-        NSAttributedString.Key.foregroundColor: UIColor.red,
+        NSAttributedString.Key.foregroundColor: UIColor.lightGray,
         NSAttributedString.Key.font: barButtonFont(for: .body),
     ]
     navbar?.titleTextAttributes = smallTitleAttribs

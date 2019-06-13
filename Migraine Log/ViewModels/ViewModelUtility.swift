@@ -21,6 +21,6 @@ let CommonDateFormatter: DateFormatter = {
 }()
 
 func severityString(_ severity: Int) -> String {
-    let symbols = Array<String>(repeating: "⚡️", count: severity)
+    let symbols = Array<String>(repeating: "⚡️", count: severity + 1)
     return symbols.joined(separator: " ")
 }
