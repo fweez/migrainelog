@@ -9,6 +9,7 @@
 import UIKit
 import RxCocoa
 import RxSwift
+import FontAwesome_swift
 
 class MigraineListViewController: UIViewController, UITableViewDelegate {
     var migraineList: UITableView = UITableView()
@@ -28,10 +29,12 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        title = "Recent Migraines"
+        let normalTabIcon = UIImage.fontAwesomeIcon(name: .bolt, style: .solid, textColor: .white, size: CGSize(width: 30, height: 30))
+        tabBarItem = UITabBarItem(title: "Recent", image: normalTabIcon, tag:0)
         tallNavbarStyle(navigationController?.navigationBar)
         baseTabbarstyle(tabBarController?.tabBar)
         baseBackgroundStyle(view)
-        title = "Recent Migraines"
         bindData()
     }
     

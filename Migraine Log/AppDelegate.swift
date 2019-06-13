@@ -7,6 +7,7 @@
 //
 
 import UIKit
+import FontAwesome_swift
 
 @UIApplicationMain
 class AppDelegate: UIResponder, UIApplicationDelegate {
@@ -22,7 +23,8 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         }
         let tabController = UITabBarController()
         window.rootViewController = tabController
-        let navController = UINavigationController(rootViewController: MigraineListViewController())
+        let migraineListVC = MigraineListViewController()
+        let navController = UINavigationController(rootViewController: migraineListVC)
         
         tabController.viewControllers = [
             navController,
