@@ -38,6 +38,7 @@ struct MigraineDetailsViewModel {
     var formattedSeverity: Driver<String>
     var cause: Driver<String>
     var notes: Driver<String>
+    var updated: Driver<Int>
     
     private var migraine: Observable<Migraine>
     private var rizatriptanId: BehaviorRelay<Int> = BehaviorRelay(value: -1)
@@ -130,6 +131,8 @@ struct MigraineDetailsViewModel {
         notes = migraine
             .map { $0.notes }
             .asDriver(onErrorJustReturn: "")
+        updated = migraineId
+            .asDriver(onErrorJustReturn: -1)
         
         let startInfo = Observable.combineLatest(setStarted, migraine)
         saveStarted.withLatestFrom(startInfo)

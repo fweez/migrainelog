@@ -75,5 +75,9 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
                 .subscribe(onNext: pushNavToMigraineId)
                 .disposed(by: disposeBag)
         }
+        
+        detailVC.viewModel.updated
+            .drive(viewModel.updated)
+            .disposed(by: disposeBag)
     }
 }

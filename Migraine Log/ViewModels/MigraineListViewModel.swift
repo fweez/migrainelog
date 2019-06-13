@@ -10,10 +10,14 @@ import Foundation
 import RxSwift
 
 struct MigraineListViewModel {
+    // OUTPUTS
     var ids: BehaviorSubject<[Int]>
     var makeNew = PublishSubject<Void>()
     var newMigraine: Observable<Int>
     var deleteMigraine = PublishSubject<Int>()
+    
+    //INPUTS
+    var updated = PublishSubject<Int>()
     
     private let disposeBag = DisposeBag()
 
@@ -38,6 +42,13 @@ struct MigraineListViewModel {
                 Migraine.deleteId(id)
                 return Migraine.allIds()
             }
+            .asDriver(onErrorJustReturn: [])
+            .drive(ids)
+            .disposed(by: disposeBag)
+        
+        updated
+            .observeOn(DBScheduler)
+            .map { _ in Migraine.allIds() }
             .asDriver(onErrorJustReturn: [])
             .drive(ids)
             .disposed(by: disposeBag)
