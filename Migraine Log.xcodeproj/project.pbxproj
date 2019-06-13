@@ -13,6 +13,7 @@
 		9400C3D622AD6BB70080BD84 /* LibreFranklin-ExtraLight.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9400C3D522AD6BB70080BD84 /* LibreFranklin-ExtraLight.ttf */; };
 		9400C3D822AD6BD80080BD84 /* SourceSerifPro-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9400C3D722AD6BD80080BD84 /* SourceSerifPro-Regular.ttf */; };
 		9400C3DA22AD7F970080BD84 /* LibreFranklin-Regular.ttf in Resources */ = {isa = PBXBuildFile; fileRef = 9400C3D922AD7F970080BD84 /* LibreFranklin-Regular.ttf */; };
+		940DD98122B1B4780085E39F /* ViewModelUtility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 940DD98022B1B4780085E39F /* ViewModelUtility.swift */; };
 		94382B6421011C7600606FF7 /* Migraine.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B6321011C7600606FF7 /* Migraine.swift */; };
 		94382B6621011E4200606FF7 /* Treatment.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B6521011E4200606FF7 /* Treatment.swift */; };
 		94382B68210124BF00606FF7 /* DB.swift in Sources */ = {isa = PBXBuildFile; fileRef = 94382B67210124BF00606FF7 /* DB.swift */; };
@@ -52,6 +53,7 @@
 		9400C3D522AD6BB70080BD84 /* LibreFranklin-ExtraLight.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LibreFranklin-ExtraLight.ttf"; sourceTree = "<group>"; };
 		9400C3D722AD6BD80080BD84 /* SourceSerifPro-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "SourceSerifPro-Regular.ttf"; sourceTree = "<group>"; };
 		9400C3D922AD7F970080BD84 /* LibreFranklin-Regular.ttf */ = {isa = PBXFileReference; lastKnownFileType = file; path = "LibreFranklin-Regular.ttf"; sourceTree = "<group>"; };
+		940DD98022B1B4780085E39F /* ViewModelUtility.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ViewModelUtility.swift; sourceTree = "<group>"; };
 		94382B6321011C7600606FF7 /* Migraine.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Migraine.swift; sourceTree = "<group>"; };
 		94382B6521011E4200606FF7 /* Treatment.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Treatment.swift; sourceTree = "<group>"; };
 		94382B67210124BF00606FF7 /* DB.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = DB.swift; sourceTree = "<group>"; };
@@ -115,6 +117,7 @@
 		9441703A22A1DE4800366F5C /* ViewModels */ = {
 			isa = PBXGroup;
 			children = (
+				940DD98022B1B4780085E39F /* ViewModelUtility.swift */,
 				9400C3CD22AAF1800080BD84 /* MigraineListViewModel.swift */,
 				9400C3CB22AAF1460080BD84 /* MigraineCellViewModel.swift */,
 				9441703522A1DC2200366F5C /* MigraineDetailsViewModel.swift */,
@@ -317,6 +320,7 @@
 				94382B6C2102C1C000606FF7 /* MigraineCell.swift in Sources */,
 				9400C3D022AC6A910080BD84 /* Styles.swift in Sources */,
 				94382B6A21012DD800606FF7 /* MigraineDetailsViewController.swift in Sources */,
+				940DD98122B1B4780085E39F /* ViewModelUtility.swift in Sources */,
 				94382B6421011C7600606FF7 /* Migraine.swift in Sources */,
 				9400C3CC22AAF1460080BD84 /* MigraineCellViewModel.swift in Sources */,
 				94A0015221011AC400F2819E /* AppDelegate.swift in Sources */,

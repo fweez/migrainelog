@@ -10,20 +10,6 @@ import Foundation
 import RxSwift
 import RxCocoa
 
-// MARK: Formatted strings
-let CommonDateFormatter: DateFormatter = {
-    let fmt = DateFormatter()
-    fmt.doesRelativeDateFormatting = true
-    fmt.dateStyle = .medium
-    fmt.timeStyle = .short
-    return fmt
-}()
-
-func severityString(_ severity: Int) -> String {
-    let symbols = Array<String>(repeating: "⚡️", count: severity)
-    return symbols.joined(separator: " ")
-}
-
 struct MigraineDetailsViewModel {
     // inputs
     var migraineId = BehaviorRelay<Int>(value: -1)
@@ -65,6 +51,7 @@ struct MigraineDetailsViewModel {
     
     init() {
         migraine = migraineId
+            .observeOn(DBScheduler)
             .flatMap { id -> Observable<Migraine> in
                 let m = Migraine.fetch(migraineId: id) ?? Migraine()
                 return Observable.of(m)
@@ -72,16 +59,19 @@ struct MigraineDetailsViewModel {
             .share(replay: 1, scope: .forever)
         
         migraine
+            .observeOn(DBScheduler)
             .map { $0.treatment(medicine: .Rizatriptan).id }
             .asDriver(onErrorJustReturn: -1)
             .drive(rizatriptanId)
             .disposed(by: disposeBag)
         migraine
+            .observeOn(DBScheduler)
             .map { $0.treatment(medicine: .Caffeine).id }
             .asDriver(onErrorJustReturn: -1)
             .drive(caffeineId)
             .disposed(by: disposeBag)
         migraine
+            .observeOn(DBScheduler)
             .map { $0.treatment(medicine: .Ibuprofen).id }
             .asDriver(onErrorJustReturn: -1)
             .drive(ibuprofenId)
@@ -93,12 +83,15 @@ struct MigraineDetailsViewModel {
         }
         
         rizatriptan = rizatriptanId
+            .observeOn(DBScheduler)
             .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         caffeine = caffeineId
+            .observeOn(DBScheduler)
             .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         ibuprofen = ibuprofenId
+            .observeOn(DBScheduler)
             .flatMap(fetchTreatment)
             .share(replay: 1, scope: .forever)
         
@@ -167,22 +160,26 @@ struct MigraineDetailsViewModel {
             .disposed(by: disposeBag)
         
         increaseRizatriptan.withLatestFrom(rizatriptan)
+            .observeOn(DBScheduler)
             .map { $0.incrementAmount() }
             .asDriver(onErrorJustReturn: -1)
             .drive(rizatriptanId)
             .disposed(by: disposeBag)
         increaseCaffeine.withLatestFrom(caffeine)
+            .observeOn(DBScheduler)
             .map { $0.incrementAmount() }
             .asDriver(onErrorJustReturn: -1)
             .drive(caffeineId)
             .disposed(by: disposeBag)
         increaseIbuprofen.withLatestFrom(ibuprofen)
+            .observeOn(DBScheduler)
             .map { $0.incrementAmount() }
             .asDriver(onErrorJustReturn: -1)
             .drive(ibuprofenId)
             .disposed(by: disposeBag)
         
         increaseSeverity.withLatestFrom(migraine)
+            .observeOn(DBScheduler)
             .map { $0.increaseSeverity() }
             .asDriver(onErrorJustReturn: -1)
             .drive(migraineId)
@@ -190,6 +187,7 @@ struct MigraineDetailsViewModel {
         
         let causeInfo = Observable.combineLatest(setCause, migraine)
         saveCause.withLatestFrom(causeInfo)
+            .observeOn(DBScheduler)
             .map { (t: (String, Migraine)) -> Int in
                 let (newCause, migraine) = t
                 return migraine.updateCause(newCause)
@@ -200,6 +198,7 @@ struct MigraineDetailsViewModel {
         
         let notesInfo = Observable.combineLatest(setNotes, migraine)
         saveNotes.withLatestFrom(notesInfo)
+            .observeOn(DBScheduler)
             .map { (t: (String, Migraine)) -> Int in
                 let (newNotes, migraine) = t
                 return migraine.updateNotes(newNotes)

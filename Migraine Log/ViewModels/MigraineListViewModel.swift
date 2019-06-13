@@ -21,18 +21,19 @@ struct MigraineListViewModel {
         ids = BehaviorSubject(value: Migraine.allIds())
         
         newMigraine = makeNew
-            .map {
-                Migraine.new()
-            }
+            .subscribeOn(DBScheduler)
+            .map(Migraine.new)
             .debug()
         
         makeNew
+            .observeOn(DBScheduler)
             .map(Migraine.allIds)
             .asDriver(onErrorJustReturn: [])
             .drive(ids)
             .disposed(by: disposeBag)
         
         deleteMigraine
+            .observeOn(DBScheduler)
             .map { id in
                 Migraine.deleteId(id)
                 return Migraine.allIds()
