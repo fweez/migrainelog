@@ -32,10 +32,14 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
         title = "Recent Migraines"
         let normalTabIcon = UIImage.fontAwesomeIcon(name: .bolt, style: .solid, textColor: .white, size: CGSize(width: 30, height: 30))
         tabBarItem = UITabBarItem(title: "Recent", image: normalTabIcon, tag:0)
+        applyStyling()
+        bindData()
+    }
+    
+    fileprivate func applyStyling() {
         tallNavbarStyle(navigationController?.navigationBar)
         baseTabbarstyle(tabBarController?.tabBar)
         baseBackgroundStyle(view)
-        bindData()
     }
     
     private func bindData() {

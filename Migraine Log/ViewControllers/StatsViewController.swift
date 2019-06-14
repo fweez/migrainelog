@@ -7,27 +7,110 @@
 //
 
 import UIKit
+import RxSwift
+import RxCocoa
+
+class StatBlock {
+    let viewModel = StatsBlockViewModel()
+    
+    let title = UILabel()
+    let migrainesLabel = UILabel()
+    let rztLabel = UILabel()
+    let ibuprofenLabel = UILabel()
+    
+    private let disposeBag = DisposeBag()
+
+    func addTo(stackView: UIStackView, withRange range: StatsTimeRange) {
+        let addLabelToVStack = addLabelWithTextToVStackFn(stackView: stackView)
+        addLabelToVStack(title, "Last Placeholder days")
+        addLabelToVStack(migrainesLabel, "Placeholder migraines")
+        addLabelToVStack(rztLabel, "Placeholder doses of rizatriptan")
+        addLabelToVStack(ibuprofenLabel, "Placeholder doses of ibuprofen")
+    }
+    
+    func bindData() {
+        viewModel.title
+            .debug("TITLE - LABEL BINDING", trimOutput: false)
+            .drive(title.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.migraineCount
+            .drive(migrainesLabel.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.rizatriptanCount
+            .drive(rztLabel.rx.text)
+            .disposed(by: disposeBag)
+        viewModel.ibuprofenCount
+            .debug()
+            .drive(ibuprofenLabel.rx.text)
+            .disposed(by: disposeBag)
+    }
+    
+    func applyStyling() {
+        largeLabelStyle(title)
+        [migrainesLabel, rztLabel, ibuprofenLabel].forEach(bodyLabelStyle)
+    }
+}
 
 class StatsViewController: UIViewController {
-    @IBOutlet weak var monthMigrainesLabel: UILabel!
-    @IBOutlet weak var monthRztLabel: UILabel!
-    @IBOutlet weak var monthIbuprofenLabel: UILabel!
-    @IBOutlet weak var quarterMigrainesLabel: UILabel!
-    @IBOutlet weak var quarterRztLabel: UILabel!
-    @IBOutlet weak var quarterIbuprofenLabel: UILabel!
+    let scrollView = UIScrollView()
+    let stackView = UIStackView()
+    
+    let monthStatBlock = StatBlock()
+    let quarterStatBlock = StatBlock()
+    let exportButton = UIButton()
     
     override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
     
+    override func loadView() {
+        view = UIView()
+        
+        prepareForAutolayout(scrollView)
+        view.addSubview(scrollView)
+        prepareForAutolayout(stackView)
+        scrollView.addSubview(stackView)
+        
+        monthStatBlock.addTo(stackView: stackView, withRange: .month)
+        quarterStatBlock.addTo(stackView: stackView, withRange: .quarter)
+        let addButtonToVStack = addButtonWithTextToVStackFn(stackView: stackView)
+        addButtonToVStack(exportButton, "Export")
+        
+        bindData()
+    }
+    
+    func bindData() {
+        monthStatBlock.bindData()
+        quarterStatBlock.bindData()
+    }
+    
+    override func viewDidLoad() {
+        super.viewDidLoad()
+        title = "Statistics"
+        
+        setupConstraints()
+        applyStyling()
+        
+        monthStatBlock.viewModel.range.onNext(.month)
+        quarterStatBlock.viewModel.range.onNext(.quarter)
+    }
+    
+    func setupConstraints() {
+        fullSizeEmbed(scrollView, within: view)
+        commonInsetEmbed(stackView, within: scrollView)
+    }
+    
+    func applyStyling() {
+        tallNavbarStyle(navigationController?.navigationBar)
+        baseTabbarstyle(tabBarController?.tabBar)
+        baseBackgroundStyle(view)
+        stackViewStyle(stackView)
+        monthStatBlock.applyStyling()
+        quarterStatBlock.applyStyling()
+        baseButtonStyle(exportButton)
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         super.viewWillAppear(animated)
-        
-        self.monthMigrainesLabel.text = "\(Migraine.monthMigraineCount) migraines"
-        self.monthRztLabel.text = "\(Treatment.monthRztCount) doses of rizatriptan"
-        self.monthIbuprofenLabel.text = "\(Treatment.monthIbuprofenCount) doses of ibuprofen"
-        
-        self.quarterMigrainesLabel.text = "\(Migraine.quarterMigraineCount) migraines"
-        self.quarterRztLabel.text = "\(Treatment.quarterRztCount) doses of rizatriptan"
-        self.quarterIbuprofenLabel.text = "\(Treatment.quarterIbuprofenCount) doses of ibuprofen"
+        // Fire an update, probably
     }
     
     @IBAction func tappedExport(_ sender: UIButton) {

@@ -24,11 +24,15 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
         let tabController = UITabBarController()
         window.rootViewController = tabController
         let migraineListVC = MigraineListViewController()
-        let navController = UINavigationController(rootViewController: migraineListVC)
+        let migraineListNavController = UINavigationController(rootViewController: migraineListVC)
+        let statsVC = StatsViewController()
+        let normalTabIcon = UIImage.fontAwesomeIcon(name: .chartLine, style: .solid, textColor: .white, size: CGSize(width: 30, height: 30))
+        statsVC.tabBarItem = UITabBarItem(title: "Stats", image: normalTabIcon, tag:0)
         
+        let statsNavController = UINavigationController(rootViewController: statsVC)
         tabController.viewControllers = [
-            navController,
-            StatsViewController()
+            migraineListNavController,
+            statsNavController
         ]
         window.makeKeyAndVisible()
         

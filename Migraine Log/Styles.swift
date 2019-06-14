@@ -15,7 +15,7 @@ let veryDarkGray = UIColor.init(white: 0.1, alpha: 1)
 let extremelyDarkGray = UIColor.init(white: 0.05, alpha: 1)
 let background = UIColor.black
 
-func prepareForAutolayout(_ view: UIView) { view.translatesAutoresizingMaskIntoConstraints = false }
+func prepareForAutolayout(_ view: UIView?) { view?.translatesAutoresizingMaskIntoConstraints = false }
 func baseBackgroundStyle(_ view: UIView?) { view?.backgroundColor = background }
 
 func font(named fontName: String, for textStyle: UIFont.TextStyle, baseSize: CGFloat = UIFont.labelFontSize) -> UIFont {
@@ -115,6 +115,9 @@ func largeLabelStyle(_ label: UILabel?) {
 }
 
 func stackViewStyle(_ stack: UIStackView?) {
+    
+    prepareForAutolayout(stack)
+    stack?.axis = .vertical
     stack?.spacing = 8
     stack?.distribution = .equalSpacing
 }

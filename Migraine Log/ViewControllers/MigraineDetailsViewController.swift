@@ -54,20 +54,9 @@ class DetailsViewController: UIViewController {
         
         prepareForAutolayout(stackView)
         
-        func addViewToVStack(_ view: UIView) {
-            prepareForAutolayout(view)
-            stackView.addArrangedSubview(view)
-        }
-        
-        func addLabelWithTextToVStack(_ label: UILabel, _ text: String) {
-            label.text = text
-            addViewToVStack(label)
-        }
-        
-        func addButtonWithTextToVStack(_ button: UIButton, _ title: String) {
-            button.setTitle(title, for: .normal)
-            addViewToVStack(button)
-        }
+        let addViewToVStack = addViewToVStackFn(stackView: stackView)
+        let addLabelWithTextToVStack = addLabelWithTextToVStackFn(stackView: stackView)
+        let addButtonWithTextToVStack = addButtonWithTextToVStackFn(stackView: stackView)
         
         addLabelWithTextToVStack(migraineTitle, "Add/Edit Migraine (PH)")
         addButtonWithTextToVStack(startedButton, "Started <placeholder date>")
@@ -240,22 +229,12 @@ class DetailsViewController: UIViewController {
     }
     
     fileprivate func setUpConstraints() {
-        scrollView.leftAnchor.constraint(equalTo: view.safeAreaLayoutGuide.leftAnchor).isActive = true
-        scrollView.rightAnchor.constraint(equalTo: view.safeAreaLayoutGuide.rightAnchor).isActive = true
-        scrollView.topAnchor.constraint(equalTo: view.safeAreaLayoutGuide.topAnchor).isActive = true
-        scrollView.bottomAnchor.constraint(equalTo: view.safeAreaLayoutGuide.bottomAnchor).isActive = true
-        
-        stackView.leftAnchor.constraint(equalTo: scrollView.leftAnchor, constant: 20).isActive = true
-        stackView.rightAnchor.constraint(equalTo: scrollView.rightAnchor, constant: -20).isActive = true
-        stackView.topAnchor.constraint(equalTo: scrollView.topAnchor, constant: 20).isActive = true
-        stackView.bottomAnchor.constraint(equalTo: scrollView.bottomAnchor, constant: -20).isActive = true
-        stackView.widthAnchor.constraint(equalTo: view.widthAnchor, constant: -40).isActive = true
-        
+        fullSizeEmbed(scrollView, within: view)
+        commonInsetEmbed(stackView, within: scrollView)
         notesView.heightAnchor.constraint(equalToConstant: 60).isActive = true
     }
     
     fileprivate func applyStyling() {
-        stackView.axis = .vertical
         stackViewStyle(stackView)
         baseBackgroundStyle(view)
         baseNavbarStyle(navigationController?.navigationBar)
