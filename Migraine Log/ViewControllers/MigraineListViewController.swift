@@ -20,7 +20,7 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
     var viewModel = MigraineListViewModel()
     var disposeBag = DisposeBag()
     
-    override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
+    
     
     override func loadView() {
         view = migraineList

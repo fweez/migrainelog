@@ -21,10 +21,10 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             assertionFailure()
             return true
         }
-        let tabController = UITabBarController()
+        let tabController = TabBarController()
         window.rootViewController = tabController
         let migraineListVC = MigraineListViewController()
-        let migraineListNavController = UINavigationController(rootViewController: migraineListVC)
+        let migraineListNavController = NavigationController(rootViewController: migraineListVC)
         let statsVC = StatsViewController()
         let normalTabIcon = UIImage.fontAwesomeIcon(name: .chartLine, style: .solid, textColor: .white, size: CGSize(width: 30, height: 30))
         statsVC.tabBarItem = UITabBarItem(title: "Stats", image: normalTabIcon, tag:0)
@@ -34,6 +34,9 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
             migraineListNavController,
             statsNavController
         ]
+        
+        tabController.setNeedsStatusBarAppearanceUpdate()
+        
         window.makeKeyAndVisible()
         
         return true
@@ -60,7 +63,5 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     func applicationWillTerminate(_ application: UIApplication) {
         // Called when the application is about to terminate. Save data if appropriate. See also applicationDidEnterBackground:.
     }
-
-
 }
 

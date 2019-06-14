@@ -45,3 +45,11 @@ func commonInsetEmbed(_ containedView: UIView, within containerView: UIView) -> 
     containedView.bottomAnchor.constraint(equalTo: containerView.bottomAnchor, constant: -20).isActive = true
     containedView.widthAnchor.constraint(equalTo: containerView.widthAnchor, constant: -40).isActive = true
 }
+
+class TabBarController: UITabBarController {
+    override var childForStatusBarStyle: UIViewController? { return self.children.first }
+}
+
+class NavigationController: UINavigationController {
+    override var preferredStatusBarStyle: UIStatusBarStyle { return .lightContent }
+}
