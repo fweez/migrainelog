@@ -18,26 +18,41 @@ let background = UIColor.black
 func prepareForAutolayout(_ view: UIView?) { view?.translatesAutoresizingMaskIntoConstraints = false }
 func baseBackgroundStyle(_ view: UIView?) { view?.backgroundColor = background }
 
-func font(named fontName: String, for textStyle: UIFont.TextStyle, baseSize: CGFloat = UIFont.labelFontSize) -> UIFont {
+func fontWithName(_ fontName: String, for textStyle: UIFont.TextStyle, baseSize: CGFloat = UIFont.labelFontSize) -> UIFont {
     guard let customFont = UIFont(name: fontName, size: baseSize) else {
         fatalError("Couldn't load font \(fontName)")
     }
     return UIFontMetrics(forTextStyle: textStyle).scaledFont(for: customFont)
 }
 
-func bodyFont(for textStyle: UIFont.TextStyle) -> UIFont {
-    let fontName = "LibreFranklin-Regular"
-    return font(named: fontName, for: textStyle)
+enum SupportedTextStyles {
+    case body, subheadline, title1, title3
+    
+    var textStyle: UIFont.TextStyle {
+        switch self {
+        case .body: return .body
+        case .subheadline: return .subheadline
+        case .title1: return .title1
+        case .title3: return .title3
+        }
+    }
+    
+    var font: UIFont {
+        let regular = "LibreFranklin-Regular"
+        let light = "LibreFranklin-ExtraLight"
+        switch self {
+        case .body: return fontWithName(regular, for: textStyle)
+        case .subheadline: return fontWithName(light, for: textStyle, baseSize: 18)
+        case .title3: return fontWithName(regular, for: textStyle, baseSize: 24)
+        case .title1: return fontWithName(light, for: textStyle, baseSize: 35)
+        }
+    }
 }
 
-func titleFont(for textStyle: UIFont.TextStyle) -> UIFont {
-    let fontName = "LibreFranklin-ExtraLight"
-    return font(named: fontName, for: textStyle, baseSize: 35)
-}
-
-func barButtonFont(for textStyle: UIFont.TextStyle) -> UIFont {
-    let fontName = "LibreFranklin-ExtraLight"
-    return font(named: fontName, for: textStyle, baseSize: 18)
+func labelStyle(_ label: UILabel?, for style: SupportedTextStyles) {
+    baseLabelStyle(label)
+    baseBackgroundStyle(label)
+    label?.font = style.font
 }
 
 func baseNavbarStyle(_ navbar: UINavigationBar?) {
@@ -46,13 +61,13 @@ func baseNavbarStyle(_ navbar: UINavigationBar?) {
     
     let largeTitleAttribs = [
         NSAttributedString.Key.foregroundColor: UIColor.lightGray,
-        NSAttributedString.Key.font: titleFont(for: .largeTitle),
+        NSAttributedString.Key.font: SupportedTextStyles.title1.font
     ]
     navbar?.largeTitleTextAttributes = largeTitleAttribs
     
     let smallTitleAttribs = [
         NSAttributedString.Key.foregroundColor: UIColor.lightGray,
-        NSAttributedString.Key.font: barButtonFont(for: .body),
+        NSAttributedString.Key.font: SupportedTextStyles.subheadline.font
     ]
     navbar?.titleTextAttributes = smallTitleAttribs
 }
@@ -81,7 +96,7 @@ func baseLabelStyle(_ label: UILabel?) {
     setHuggingAndCompression(label)
     label?.numberOfLines = 0
     label?.lineBreakMode = .byWordWrapping
-    label?.font = bodyFont(for: .body)
+    label?.font = SupportedTextStyles.body.font
     label?.adjustsFontForContentSizeCategory = true
     label?.textColor = UIColor.white
 }
@@ -103,27 +118,6 @@ func cellStyle(_ cell: UITableViewCell) {
     cell.selectedBackgroundView = backgroundView
 }
 
-enum SupportedTextStyles {
-    case body, title1, title3
-    
-    var textStyle: UIFont.TextStyle {
-        switch self {
-        case .body: return .body
-        case .title1: return .title1
-        case .title3: return .title3
-        }
-    }
-}
-
-func labelStyle(_ label: UILabel?, for style: SupportedTextStyles) {
-    baseLabelStyle(label)
-    baseBackgroundStyle(label)
-    switch style {
-    case .body: label?.font = bodyFont(for: style.textStyle)
-    case .title1, .title3: label?.font = titleFont(for: style.textStyle)
-    }
-}
-
 func stackViewStyle(_ stack: UIStackView?) {
     prepareForAutolayout(stack)
     stack?.axis = .vertical
@@ -135,7 +129,7 @@ func textAreaStyle(_ view: UIView) {
     setHuggingAndCompression(view)
     view.backgroundColor = extremelyDarkGray
     view.layer.cornerRadius = roundedCornerRadius
-    let textAreaFont = bodyFont(for: .body)
+    let textAreaFont = SupportedTextStyles.body.font
     if let tv = view as? UITextView {
         tv.font = textAreaFont
         tv.textColor = UIColor.white

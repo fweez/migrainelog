@@ -30,7 +30,7 @@ class MigraineCell: UITableViewCell {
     
     func applyStyling() {
         cellStyle(self)
-        labelStyle(textLabel, for: .title1)
+        labelStyle(textLabel, for: .title3)
         labelStyle(detailTextLabel, for: .body)
         
     }
