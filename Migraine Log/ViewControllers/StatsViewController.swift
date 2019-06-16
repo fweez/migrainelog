@@ -46,8 +46,8 @@ class StatBlock {
     }
     
     func applyStyling() {
-        largeLabelStyle(title)
-        [migrainesLabel, rztLabel, ibuprofenLabel].forEach(bodyLabelStyle)
+        labelStyle(title, for: .title1)
+        [migrainesLabel, rztLabel, ibuprofenLabel].forEach { labelStyle($0, for: .body) }
     }
 }
 

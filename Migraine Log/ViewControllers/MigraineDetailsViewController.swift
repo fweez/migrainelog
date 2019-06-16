@@ -238,8 +238,8 @@ class DetailsViewController: UIViewController {
         stackViewStyle(stackView)
         baseBackgroundStyle(view)
         baseNavbarStyle(navigationController?.navigationBar)
-        [startedPickerTitle, endedPickerTitle].forEach(bodyLabelStyle)
-        [migraineTitle, medicinesTitle, severityTitle, causeTitle, notesTitle].forEach(largeLabelStyle)
+        [startedPickerTitle, endedPickerTitle].forEach { labelStyle($0, for: .body) }
+        [migraineTitle, medicinesTitle, severityTitle, causeTitle, notesTitle].forEach { labelStyle($0, for: .title1) }
         [startedButton, startedPickerSave, endedButton, endedPickerSave, rztButton, cafButton, ibuButton, severityButton].forEach(baseButtonStyle)
         [causeView, notesView].forEach(textAreaStyle)
         [startedPicker, endedPicker].forEach(datePickerStyle)

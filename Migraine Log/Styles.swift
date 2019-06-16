@@ -24,6 +24,7 @@ func font(named fontName: String, for textStyle: UIFont.TextStyle, baseSize: CGF
     }
     return UIFontMetrics(forTextStyle: textStyle).scaledFont(for: customFont)
 }
+
 func bodyFont(for textStyle: UIFont.TextStyle) -> UIFont {
     let fontName = "LibreFranklin-Regular"
     return font(named: fontName, for: textStyle)
@@ -97,25 +98,33 @@ func baseButtonStyle(_ button: UIButton?) {
 
 func cellStyle(_ cell: UITableViewCell) {
     baseBackgroundStyle(cell.contentView)
-    baseLabelStyle(cell.textLabel)
-    baseLabelStyle(cell.detailTextLabel)
     let backgroundView = UIView()
     backgroundView.backgroundColor = UIColor.darkGray
     cell.selectedBackgroundView = backgroundView
 }
 
-func bodyLabelStyle(_ label: UILabel?) {
-    baseLabelStyle(label)
-    baseBackgroundStyle(label)
+enum SupportedTextStyles {
+    case body, title1, title3
+    
+    var textStyle: UIFont.TextStyle {
+        switch self {
+        case .body: return .body
+        case .title1: return .title1
+        case .title3: return .title3
+        }
+    }
 }
 
-func largeLabelStyle(_ label: UILabel?) {
+func labelStyle(_ label: UILabel?, for style: SupportedTextStyles) {
     baseLabelStyle(label)
-    label?.font = titleFont(for: .title1)
+    baseBackgroundStyle(label)
+    switch style {
+    case .body: label?.font = bodyFont(for: style.textStyle)
+    case .title1, .title3: label?.font = titleFont(for: style.textStyle)
+    }
 }
 
 func stackViewStyle(_ stack: UIStackView?) {
-    
     prepareForAutolayout(stack)
     stack?.axis = .vertical
     stack?.spacing = 8

@@ -25,6 +25,13 @@ class MigraineCell: UITableViewCell {
             .drive(detailTextLabel!.rx.text)
             .disposed(by: disposeBag)
         
+        applyStyling()
+    }
+    
+    func applyStyling() {
         cellStyle(self)
+        labelStyle(textLabel, for: .title1)
+        labelStyle(detailTextLabel, for: .body)
+        
     }
 }
