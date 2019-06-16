@@ -27,8 +27,7 @@ struct MigraineListViewModel {
         newMigraine = makeNew
             .subscribeOn(DBScheduler)
             .map(Migraine.new)
-            .debug()
-        
+            .share(replay: 1, scope: .forever)
         makeNew
             .observeOn(DBScheduler)
             .map(Migraine.allIds)

@@ -30,7 +30,6 @@ class StatBlock {
     
     func bindData() {
         viewModel.title
-            .debug("TITLE - LABEL BINDING", trimOutput: false)
             .drive(title.rx.text)
             .disposed(by: disposeBag)
         viewModel.migraineCount
@@ -40,7 +39,6 @@ class StatBlock {
             .drive(rztLabel.rx.text)
             .disposed(by: disposeBag)
         viewModel.ibuprofenCount
-            .debug()
             .drive(ibuprofenLabel.rx.text)
             .disposed(by: disposeBag)
     }

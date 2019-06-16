@@ -53,7 +53,6 @@ struct StatsBlockViewModel {
     init() {
         stats = range
             .observeOn(DBScheduler)
-            .debug("RANGE - STATS VM OBJECT", trimOutput: false)
             .map { MigraineStats(range: $0) }
             .share(replay: 1, scope: .forever)
         
@@ -61,7 +60,6 @@ struct StatsBlockViewModel {
         
         title = range
             .map { $0.rawValue }
-            .debug("RANGE - TITLE VM OBJECT", trimOutput: false)
             .asDriver(onErrorJustReturn: "ERROR")
         migraineCount = stats
             .map { "\($0.migraines) migraine" + pluralizeOn($0.migraines) }

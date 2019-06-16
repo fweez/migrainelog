@@ -58,6 +58,7 @@ class MigraineListViewController: UIViewController, UITableViewDelegate {
             .drive(viewModel.deleteMigraine)
             .disposed(by: disposeBag)
         addButton.rx.tap
+            .debug("Tap add button", trimOutput: false)
             .bind(to: viewModel.makeNew)
             .disposed(by: disposeBag)
         
