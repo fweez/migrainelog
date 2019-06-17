@@ -69,8 +69,9 @@ class StatsViewController: UIViewController {
         
         monthStatBlock.addTo(stackView: stackView, withRange: .month)
         quarterStatBlock.addTo(stackView: stackView, withRange: .quarter)
-        let addButtonToVStack = addButtonWithTextToVStackFn(stackView: stackView)
-        addButtonToVStack(exportButton, "Export")
+        
+        let share = UIBarButtonItem.init(barButtonSystemItem: .action, target: self, action: #selector(tappedExport(_:)))
+        navigationItem.rightBarButtonItem = share
         
         bindData()
     }
