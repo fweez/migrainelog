@@ -73,7 +73,7 @@ struct StatsBlockViewModel {
         ibuprofenCount = stats
             .map { stats in
                 let ibu = stats.doses[.Ibuprofen] ?? 0
-                return "\(ibu) dose" + pluralizeOn(ibu) + " of rizatriptan"
+                return "\(ibu) dose" + pluralizeOn(ibu) + " of ibuprofen"
             }
             .asDriver(onErrorJustReturn: "ERROR")
     }

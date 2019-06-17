@@ -199,8 +199,11 @@ extension Migraine {
                 let rzt = m.treatment(medicine: .Rizatriptan)
                 let ibu = m.treatment(medicine: .Ibuprofen)
                 let caf = m.treatment(medicine: .Caffeine)
-                
-                //output += "\(dateFormatter.string(from: m.startDate)) - \(m.formattedLength) migraine, severity \(m.severity)\n"
+                let start = dateFormatter.string(from: m.startDate)
+                let end: String
+                if let endDate = m.endDate { end = dateFormatter.string(from: endDate) }
+                else { end = "" }
+                output += "\(start) - \(end), severity \(m.severity)\n"
                 if rzt.amount > 0 {
                     output += "\(rzt.amountDescription) rizatriptan\n"
                 }
